@@ -1,0 +1,6 @@
+{
+    "env": {
+        "MONGODB_CONNECTION_URI": "mongodb+srv://<username>:<password>@<cluster>.mongodb.net/lms?retryWrites=true&w=majority",
+        "PORT": 8080
+    }
+}
