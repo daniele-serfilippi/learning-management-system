@@ -1,0 +1,66 @@
+<h1>New course</h1>
+
+<div class="form-container">
+  <form #postForm="ngForm" (ngSubmit)="onSubmitCourse(postForm.value)">
+    <mat-form-field>
+      <input
+        matInput
+        placeholder="Title"
+        ngModel
+        name="title"
+        required
+      >
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        matInput
+        placeholder="Subitle"
+        ngModel
+        name="subtitle"
+        required
+      >
+    </mat-form-field>
+
+    <mat-form-field>
+      <textarea
+        matInput
+        placeholder="Description"
+        ngModel
+        name="description"
+        required
+      ></textarea>
+    </mat-form-field>
+
+    <mat-form-field>
+      <ngx-mat-file-input
+        name="imageUrl"
+        placeholder="Preview image"
+        valuePlaceholder="No image selected"
+        [accept]="'.png,.jpg,.jpeg'"
+        required
+      ></ngx-mat-file-input>
+      <mat-icon matSuffix>image</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        matInput
+        placeholder="Price"
+        ngModel
+        name="price"
+        required
+        type="number"
+      >
+    </mat-form-field>
+
+    <mat-card-actions>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!postForm.valid"
+      >Submit</button>
+    </mat-card-actions>
+  </form>
+</div>

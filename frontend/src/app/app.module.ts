@@ -1,20 +1,33 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
+
+import { MaterialModule } from './ui/material.module';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { CoursesComponent } from './courses/courses.component';
+import { CourseFormComponent } from './courses/course-form/course-form.component';
+import { CoursesListComponent } from './courses/courses-list/courses-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CoursesComponent
+    CoursesComponent,
+    CourseFormComponent,
+    CoursesListComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MaterialModule,
+    FormsModule,
+    HttpClientModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
