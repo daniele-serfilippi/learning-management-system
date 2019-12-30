@@ -34,7 +34,7 @@ module.exports = buildSchema(`
         subtitle: String!
         description: String!
         imageUrl: String!
-        rating: Int
+        rating: Float
         price: Float
     }
 

@@ -18,10 +18,36 @@ export class CourseFormComponent implements OnInit {
   }
 
   onSubmitCourse(courseData: Course) {
+    const graphqlQuery = {
+      query: `
+        mutation createCourseMutation(
+          $title: String!,
+          $subtitle: String!,
+          $description: String!,
+          $imageUrl: String!,
+          $rating: Float,
+          $price: Float) {
+            createCourse(courseInput: {
+              title: $title,
+              subtitle: $subtitle,
+              description: $description,
+              imageUrl: $imageUrl,
+              rating: $rating,
+              price: $price
+            }) {
+              title
+            }
+        }
+      `,
+      variables: {
+        ...courseData,
+        imageUrl: 'https://inteng-storage.s3.amazonaws.com/img/iea/nZwXYxR8Ov/sizes/codingbundle_resize_md.jpg'
+      }
+    };
     this.http
       .post(
         environment.apiURL,
-        courseData
+        graphqlQuery
       )
       .subscribe(responseData => {
         console.log(responseData);
