@@ -29,6 +29,6 @@ export class GlobalErrorHandler implements ErrorHandler {
     }
     // Always log errors
     logger.logError(message, stackTrace);
-    console.error([error]);
+    console.error(error);
   }
 }

@@ -6,7 +6,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class ErrorService {
 
-  getClientErrorMessage(error: Error): string {
+  getClientErrorMessage(error): string {
     let errorMessage = error.message ? error.message : error.toString();
 
     if (error.networkError && error.networkError.error && error.networkError.error.errors) {

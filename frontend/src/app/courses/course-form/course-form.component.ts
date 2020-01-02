@@ -5,8 +5,6 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 
-// import { environment } from 'src/environments/environment';
-
 @Component({
   selector: 'app-course-form',
   templateUrl: './course-form.component.html',

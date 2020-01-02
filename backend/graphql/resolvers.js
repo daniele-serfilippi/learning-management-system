@@ -36,10 +36,7 @@ module.exports = {
     if (validator.isEmpty(courseInput.description)) {
       errors.push({ message: "Description is required." });
     }
-    if (validator.isEmpty(courseInput.image)) {
-      errors.push({ message: "Preview image is required." });
-    }
-    if (validator.isEmpty(courseInput.price)) {
+    if (validator.isEmpty(courseInput.price.toString())) {
       errors.push({ message: "Price is required." });
     }
     if (errors.length > 0) {
@@ -55,19 +52,10 @@ module.exports = {
     const fileLocation = pathObj.path;
 
     const course = new Course({
-      title: courseInput.title,
-      subtitle: courseInput.subtitle,
-      description: courseInput.description,
+      ...courseInput,
       imageUrl: fileLocation,
       rating: 0,
-      price: courseInput.price
     });
-
-    // would it work?
-
-    // const course = new Course({
-    //   ...courseInput
-    // });
 
     const createdCourse = await course.save();
     return {

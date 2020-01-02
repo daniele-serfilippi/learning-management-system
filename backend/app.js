@@ -35,12 +35,12 @@ app.use(
     schema: graphqlSchema,
     rootValue: graphqlResolver,
     graphiql: true,
-    formatError(err) {
+    customFormatErrorFn(err) {
       if (!err.originalError) {
         return err;
       }
       const data = err.originalError.data;
-      const message = err.message || 'An error occurred.';
+      const message = `${err.message} on ${err.path}` || 'An error occurred.';
       const code = err.originalError.code || 500;
       return { message: message, status: code, data: data };
     }
@@ -56,7 +56,10 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(process.env.MONGODB_CONNECTION_URI)
+  .connect(process.env.MONGODB_CONNECTION_URI, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+  })
   .then(result => {
     app.listen(process.env.PORT || 3000);
   })
