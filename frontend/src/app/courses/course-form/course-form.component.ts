@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 
-import { Course } from '../course.model';
-import { environment } from 'src/environments/environment';
+import { Apollo } from 'apollo-angular';
+import gql from 'graphql-tag';
+
+// import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-course-form',
@@ -10,48 +13,58 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./course-form.component.sass']
 })
 export class CourseFormComponent implements OnInit {
-  srcResult: string;
+  courseForm: FormGroup;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private apollo: Apollo
+  ) { }
 
   ngOnInit() {
+    this.courseForm = this.fb.group({
+      title: [null, Validators.required],
+      subtitle: [null, Validators.required],
+      description: [null, Validators.required],
+      image: [null, Validators.required],
+      price: [null, Validators.required],
+    });
   }
 
-  onSubmitCourse(courseData: Course) {
-    const graphqlQuery = {
-      query: `
-        mutation createCourseMutation(
-          $title: String!,
-          $subtitle: String!,
-          $description: String!,
-          $imageUrl: String!,
-          $rating: Float,
-          $price: Float) {
-            createCourse(courseInput: {
-              title: $title,
-              subtitle: $subtitle,
-              description: $description,
-              imageUrl: $imageUrl,
-              rating: $rating,
-              price: $price
-            }) {
-              title
-            }
-        }
-      `,
-      variables: {
-        ...courseData,
-        imageUrl: 'https://inteng-storage.s3.amazonaws.com/img/iea/nZwXYxR8Ov/sizes/codingbundle_resize_md.jpg'
+  onSubmit() {
+    const createCourse = gql`
+      mutation createCourse(
+        $title: String!,
+        $subtitle: String!,
+        $description: String!,
+        $image: Upload!,
+        $rating: Float,
+        $price: Float
+      ) {
+          createCourse(courseInput: {
+            title: $title,
+            subtitle: $subtitle,
+            description: $description,
+            image: $image,
+            rating: $rating,
+            price: $price
+          }) {
+            title
+          }
       }
-    };
-    this.http
-      .post(
-        environment.apiURL,
-        graphqlQuery
-      )
-      .subscribe(responseData => {
-        console.log(responseData);
-      });
-  }
+    `;
 
+    const mutationResult = this.apollo.mutate({
+      mutation: createCourse,
+      variables: {
+        ...this.courseForm.value,
+        image: this.courseForm.value.image.files[0]
+      },
+      context: {
+        useMultipart: true
+      }
+    }).subscribe(res => {
+      console.log("mutation result: ", res);
+    });
+  }
 }

@@ -1,56 +1,68 @@
-<h1>New course</h1>
+<h1 class="text-center">New course</h1>
 
 <div class="form-container">
-  <form #postForm="ngForm" (ngSubmit)="onSubmitCourse(postForm.value)">
+  <form [formGroup]="courseForm" novalidate (ngSubmit)="onSubmit()">
     <mat-form-field>
       <input
         matInput
         placeholder="Title"
-        ngModel
-        name="title"
+        formControlName="title"
         required
       >
+      <mat-error *ngIf="courseForm.controls['title'].hasError('required')">
+        Title is <strong>required</strong>
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field>
       <input
         matInput
         placeholder="Subitle"
-        ngModel
-        name="subtitle"
+        formControlName="subtitle"
         required
       >
+      <mat-error *ngIf="courseForm.controls['subtitle'].hasError('required')">
+        Subitle is <strong>required</strong>
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field>
       <textarea
         matInput
         placeholder="Description"
-        ngModel
-        name="description"
+        formControlName="description"
         required
       ></textarea>
+      <mat-error *ngIf="courseForm.controls['description'].hasError('required')">
+        Description is <strong>required</strong>
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field>
       <ngx-mat-file-input
-        name="imageUrl"
+        #imageInput
+        formControlName="image"
         placeholder="Preview image"
         valuePlaceholder="No image selected"
         [accept]="'.png,.jpg,.jpeg'"
         required
       ></ngx-mat-file-input>
       <mat-icon matSuffix>image</mat-icon>
+      <button mat-icon-button matSuffix *ngIf="!imageInput.empty" (click)="imageInput.clear($event)">
+        <mat-icon>clear</mat-icon>
+      </button>
+      <mat-error *ngIf="courseForm.controls['image'].hasError('required')">
+        Image is <strong>required</strong>
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field>
       <input
         matInput
-        placeholder="Price"
-        ngModel
-        name="price"
-        required
         type="number"
+        placeholder="Price"
+        formControlName="price"
+        required
       >
     </mat-form-field>
 
@@ -59,7 +71,7 @@
         mat-raised-button
         color="primary"
         type="submit"
-        [disabled]="!postForm.valid"
+        [disabled]="courseForm.invalid"
       >Submit</button>
     </mat-card-actions>
   </form>

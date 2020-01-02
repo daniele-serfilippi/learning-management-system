@@ -1,7 +1,9 @@
+const path = require('path');
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const graphqlHttp = require('express-graphql');
+const { graphqlUploadExpress } = require('graphql-upload')
 
 const graphqlSchema = require('./graphql/schema');
 const graphqlResolver = require('./graphql/resolvers');
@@ -9,6 +11,8 @@ const graphqlResolver = require('./graphql/resolvers');
 const app = express();
 
 app.use(bodyParser.json());
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -26,6 +30,7 @@ app.use((req, res, next) => {
 
 app.use(
   '/graphql',
+  graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
   graphqlHttp({
     schema: graphqlSchema,
     rootValue: graphqlResolver,

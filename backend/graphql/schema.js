@@ -1,6 +1,8 @@
 const { buildSchema } = require('graphql');
 
 module.exports = buildSchema(`
+    scalar Upload
+
     type Course {
         _id: ID!
         title: String!
@@ -33,7 +35,7 @@ module.exports = buildSchema(`
         title: String!
         subtitle: String!
         description: String!
-        imageUrl: String!
+        image: Upload!
         rating: Float
         price: Float
     }

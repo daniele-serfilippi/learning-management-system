@@ -12,6 +12,7 @@ import { AppComponent } from './app.component';
 import { CoursesComponent } from './courses/courses.component';
 import { CourseFormComponent } from './courses/course-form/course-form.component';
 import { CoursesListComponent } from './courses/courses-list/courses-list.component';
+import { GraphQLModule } from './graphql.module';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { CoursesListComponent } from './courses/courses-list/courses-list.compon
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
+    GraphQLModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
