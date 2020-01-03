@@ -46,6 +46,7 @@ module.exports = buildSchema(`
 
     type RootMutation {
         createCourse(courseInput: CourseInputData!): Course!
+        deleteCourse(id: ID!): Boolean
     }
 
     schema {

@@ -65,6 +65,7 @@ module.exports = {
       updatedAt: createdCourse.updatedAt.toISOString()
     };
   },
+
   courses: async function() {
     const courses = await Course.find().sort({ createdAt: -1 });
     return courses.map(c => {
@@ -73,5 +74,9 @@ module.exports = {
         _id: c._id.toString()
       };
     });
+  },
+
+  deleteCourse: async function() {
+    
   }
 };

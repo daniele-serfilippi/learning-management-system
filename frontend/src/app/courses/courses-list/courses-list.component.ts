@@ -4,6 +4,7 @@ import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 
 import { environment } from 'src/environments/environment';
+import { ConfirmDialog } from 'src/app/ui/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-courses-list',
@@ -37,6 +38,20 @@ export class CoursesListComponent implements OnInit {
       query: graphqlQuery,
     })
     .subscribe((res: any) => this.courses = res.data.courses.slice());
+  }
+
+  onDeleteCourse(id: string) {
+    const confirm = new ConfirmDialog(
+      'Confirm deletion',
+      'Are you sure you want to delete the course?',
+      (res) => {
+        if (res) {
+          alert('Deleted')
+        } else {
+          alert("aborted")
+        }
+      }
+    ).show();
   }
 
 }
