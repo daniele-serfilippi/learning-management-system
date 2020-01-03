@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
+
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-course-form',
@@ -16,7 +19,9 @@ export class CourseFormComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private fb: FormBuilder,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private router: Router,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit() {
@@ -52,7 +57,7 @@ export class CourseFormComponent implements OnInit {
       }
     `;
 
-    const mutationResult = this.apollo.mutate({
+    this.apollo.mutate({
       mutation: createCourse,
       variables: {
         ...this.courseForm.value,
@@ -62,7 +67,8 @@ export class CourseFormComponent implements OnInit {
         useMultipart: true
       }
     }).subscribe(res => {
-      console.log("mutation result: ", res);
+      this.notificationService.showSuccess('Course successfully saved');
+      this.router.navigate(['courses']);
     });
   }
 }

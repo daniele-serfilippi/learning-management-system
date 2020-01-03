@@ -36,6 +36,7 @@ app.use(
     rootValue: graphqlResolver,
     graphiql: true,
     customFormatErrorFn(err) {
+      console.log(err)
       if (!err.originalError) {
         return err;
       }

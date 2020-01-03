@@ -41,7 +41,7 @@ module.exports = buildSchema(`
     }
 
     type RootQuery {
-        courses: [Course]!
+        courses: [Course!]!
     }
 
     type RootMutation {

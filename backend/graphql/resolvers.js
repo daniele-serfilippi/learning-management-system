@@ -6,17 +6,17 @@ const Course = require("../models/course");
 
 const storeFS = ({ stream, filename }) => {
   const uploadDir = "images";
-  const newFilename = new Date().getTime() + '-' + filename;
+  const newFilename = new Date().getTime() + "-" + filename;
   const path = `${uploadDir}/${newFilename}`;
   return new Promise((resolve, reject) =>
     stream
       .on("error", error => {
         if (stream.truncated)
           // delete the truncated file
-          fs.unlinkSync('./' + path);
+          fs.unlinkSync("./" + path);
         reject(error);
       })
-      .pipe(fs.createWriteStream('./' + path))
+      .pipe(fs.createWriteStream("./" + path))
       .on("error", error => reject(error))
       .on("finish", () => resolve({ path }))
   );
@@ -24,7 +24,7 @@ const storeFS = ({ stream, filename }) => {
 
 module.exports = {
   Upload: GraphQLUpload,
-  
+
   createCourse: async function({ courseInput }, req) {
     const errors = [];
     if (validator.isEmpty(courseInput.title)) {
@@ -54,7 +54,7 @@ module.exports = {
     const course = new Course({
       ...courseInput,
       imageUrl: fileLocation,
-      rating: 0,
+      rating: 0
     });
 
     const createdCourse = await course.save();
@@ -64,5 +64,14 @@ module.exports = {
       createdAt: createdCourse.createdAt.toISOString(),
       updatedAt: createdCourse.updatedAt.toISOString()
     };
+  },
+  courses: async function() {
+    const courses = await Course.find().sort({ createdAt: -1 });
+    return courses.map(c => {
+      return {
+        ...c._doc,
+        _id: c._id.toString()
+      };
+    });
   }
 };
