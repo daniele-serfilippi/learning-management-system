@@ -7,7 +7,7 @@
         <p>{{ course.subtitle }}</p>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-button>Edit</button>
+        <button mat-button [routerLink]="['edit', course._id]">Edit</button>
         <button mat-button (click)="onDeleteCourse(course._id)">Delete</button>
       </mat-card-actions>
     </mat-card>

@@ -8,6 +8,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/courses', pathMatch: 'full' },
   { path: 'courses', component: CoursesComponent, children: [
     { path: 'new', component: CourseFormComponent },
+    { path: 'edit/:id', component: CourseFormComponent },
     { path: '', component: CoursesListComponent }
   ]},
 ];

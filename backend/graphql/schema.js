@@ -35,17 +35,19 @@ module.exports = buildSchema(`
         title: String!
         subtitle: String!
         description: String!
-        image: Upload!
+        image: Upload
         rating: Float
         price: Float
     }
 
     type RootQuery {
         courses: [Course!]!
+        course(id: ID!): Course!
     }
 
     type RootMutation {
         createCourse(courseInput: CourseInputData!): Course!
+        updateCourse(id: ID!, courseInput: CourseInputData!): Course!
         deleteCourse(id: ID!): Boolean
     }
 

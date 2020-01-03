@@ -23,29 +23,43 @@ const storeFS = ({ stream, filename }) => {
   );
 };
 
+const validateCourseInput = courseInput => {
+  const errors = [];
+  if (validator.isEmpty(courseInput.title)) {
+    errors.push({ message: "Title is required." });
+  }
+  if (validator.isEmpty(courseInput.subtitle)) {
+    errors.push({ message: "Subtitle is required." });
+  }
+  if (validator.isEmpty(courseInput.description)) {
+    errors.push({ message: "Description is required." });
+  }
+  if (validator.isEmpty(courseInput.price.toString())) {
+    errors.push({ message: "Price is required." });
+  }
+  if (errors.length > 0) {
+    const error = new Error("Invalid input.");
+    error.data = errors;
+    error.code = 422;
+    throw error;
+  }
+}
+
 module.exports = {
   Upload: GraphQLUpload,
 
+  courses: async function() {
+    const courses = await Course.find().sort({ createdAt: -1 });
+    return courses.map(c => {
+      return {
+        ...c._doc,
+        _id: c._id.toString()
+      };
+    });
+  },
+
   createCourse: async function({ courseInput }, req) {
-    const errors = [];
-    if (validator.isEmpty(courseInput.title)) {
-      errors.push({ message: "Title is required." });
-    }
-    if (validator.isEmpty(courseInput.subtitle)) {
-      errors.push({ message: "Subtitle is required." });
-    }
-    if (validator.isEmpty(courseInput.description)) {
-      errors.push({ message: "Description is required." });
-    }
-    if (validator.isEmpty(courseInput.price.toString())) {
-      errors.push({ message: "Price is required." });
-    }
-    if (errors.length > 0) {
-      const error = new Error("Invalid input.");
-      error.data = errors;
-      error.code = 422;
-      throw error;
-    }
+    validateCourseInput(courseInput);
 
     const { filename, mimetype, createReadStream } = await courseInput.image;
     const stream = createReadStream();
@@ -67,14 +81,51 @@ module.exports = {
     };
   },
 
-  courses: async function() {
-    const courses = await Course.find().sort({ createdAt: -1 });
-    return courses.map(c => {
-      return {
-        ...c._doc,
-        _id: c._id.toString()
-      };
-    });
+  course: async function({ id }, req) {
+    const course = await Course.findById(id);
+    return course;
+  },
+
+  updateCourse: async function({ id, courseInput }, req) {
+    validateCourseInput(courseInput);
+
+    const course = await Course.findById(id);
+    if (!course) {
+      const error = new Error('No course found');
+      error.code = 404;
+      throw error;
+    }
+
+    course.title = courseInput.title;
+    course.subtitle = courseInput.subtitle;
+    course.description = courseInput.description;
+    course.price = courseInput.price;
+
+    const uploadedImage = await courseInput.image;
+
+    console.log(uploadedImage);
+
+    if (uploadedImage) {
+      const oldImageUrl = course.imageUrl;
+      const { filename, mimetype, createReadStream } = uploadedImage;
+      const stream = createReadStream();
+      const pathObj = await storeFS({ stream, filename });
+      const fileLocation = pathObj.path;
+      course.imageUrl = fileLocation;
+    }
+
+    const updatedCourse = await course.save();
+
+    if (updatedCourse && typeof oldImageUrl !== 'undefined') {
+      clearImage(oldImageUrl);
+    }
+
+    return {
+      ...updatedCourse._doc,
+      _id: updatedCourse._id.toString(),
+      createdAt: updatedCourse.createdAt.toISOString(),
+      updatedAt: updatedCourse.updatedAt.toISOString()
+    };
   },
 
   deleteCourse: async function({ id }, req) {

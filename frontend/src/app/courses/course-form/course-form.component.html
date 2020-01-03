@@ -2,6 +2,13 @@
 
 <div class="form-container">
   <form [formGroup]="courseForm" novalidate (ngSubmit)="onSubmit()">
+
+    <input
+      *ngIf="id"
+      type="hidden"
+      formControlName="id"
+    />
+
     <mat-form-field>
       <input
         matInput
@@ -40,12 +47,13 @@
 
     <mat-form-field>
       <ngx-mat-file-input
+
         #imageInput
         formControlName="image"
         placeholder="Preview image"
         valuePlaceholder="No image selected"
         [accept]="'.png,.jpg,.jpeg'"
-        required
+        [attr.required]="!id"
       ></ngx-mat-file-input>
       <mat-icon matSuffix>image</mat-icon>
       <button mat-icon-button matSuffix *ngIf="!imageInput.empty" (click)="imageInput.clear($event)">
