@@ -4,15 +4,15 @@ import { Component, OnInit, Inject } from '@angular/core';
 @Component({
   selector: 'app-confirm-dialog',
   templateUrl: './confirm-dialog.component.html',
-  styleUrls: ['./confirm-dialog.component.css']
+  styleUrls: ['./confirm-dialog.component.sass']
 })
-class ConfirmDialogComponent implements OnInit {
+export class ConfirmDialogComponent implements OnInit {
   title: string;
   message: string;
 
   constructor(
     public dialogRef: MatDialogRef<ConfirmDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ConfirmDialog) {
+    @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogModel) {
     // Update view with given values
     this.title = data.title;
     this.message = data.message;
@@ -37,20 +37,11 @@ class ConfirmDialogComponent implements OnInit {
  *
  * It has been kept here to keep it as part of shared component.
  */
-export class ConfirmDialog {
+export class ConfirmDialogModel {
   dialog: MatDialog;
 
   constructor(
     public title: string = 'Confirmation',
     public message: string = 'Are you sure you want to do this?',
-    public callback,
   ) { }
-
-  show = () => {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      maxWidth: '400px',
-      data: this
-    });
-    dialogRef.afterClosed().subscribe(this.callback);
-  }
 }

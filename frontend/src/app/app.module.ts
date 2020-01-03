@@ -5,18 +5,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { MaterialModule } from './ui/material.module';
-
+import { GraphQLModule } from './graphql.module';
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
 
 import { GlobalErrorHandler } from './errorHandlers/global-error-handler';
 import { ServerErrorInterceptor } from './errorHandlers/server-error.interceptor';
 
+import { AppComponent } from './app.component';
 import { CoursesComponent } from './courses/courses.component';
 import { CourseFormComponent } from './courses/course-form/course-form.component';
 import { CoursesListComponent } from './courses/courses-list/courses-list.component';
-import { GraphQLModule } from './graphql.module';
-
+import { ConfirmDialogComponent } from './ui/confirm-dialog/confirm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +23,7 @@ import { GraphQLModule } from './graphql.module';
     CoursesComponent,
     CourseFormComponent,
     CoursesListComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     BrowserModule,

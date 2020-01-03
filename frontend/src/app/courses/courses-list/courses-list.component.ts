@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-
 import { environment } from 'src/environments/environment';
-import { ConfirmDialog } from 'src/app/ui/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/ui/confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-courses-list',
@@ -16,12 +16,18 @@ export class CoursesListComponent implements OnInit {
   backendUrl: string;
 
   constructor(
-    private apollo: Apollo
+    private apollo: Apollo,
+    private dialog: MatDialog,
+    private notificationService: NotificationService
   ) {
     this.backendUrl = environment.backendURL;
-   }
+  }
 
   ngOnInit() {
+    this.getCoursesList();
+  }
+
+  getCoursesList() {
     const graphqlQuery = gql`
       {
         courses {
@@ -36,22 +42,42 @@ export class CoursesListComponent implements OnInit {
 
     this.apollo.query({
       query: graphqlQuery,
-    })
-    .subscribe((res: any) => this.courses = res.data.courses.slice());
+      fetchPolicy: 'network-only'
+    }).subscribe((res: any) => {
+      this.courses = res.data.courses.slice();
+    });
   }
 
   onDeleteCourse(id: string) {
-    const confirm = new ConfirmDialog(
-      'Confirm deletion',
-      'Are you sure you want to delete the course?',
-      (res) => {
-        if (res) {
-          alert('Deleted')
-        } else {
-          alert("aborted")
-        }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: new ConfirmDialogModel(
+        'Confirm deletion',
+        'Are you sure you want to delete the course?'
+      ),
+      maxWidth: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        const createCourse = gql`
+            mutation deleteCourse(
+              $id: ID!
+            ) {
+                deleteCourse(id: $id)
+            }
+          `;
+
+        this.apollo.mutate({
+          mutation: createCourse,
+          variables: {
+            id
+          }
+        }).subscribe(res => {
+          this.notificationService.showSuccess('Course successfully deleted');
+          this.getCoursesList();
+        });
       }
-    ).show();
+    });
   }
 
 }

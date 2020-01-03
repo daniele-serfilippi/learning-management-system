@@ -3,6 +3,7 @@ const validator = require("validator");
 const { GraphQLUpload } = require("graphql-upload");
 
 const Course = require("../models/course");
+const { clearImage } = require("../utils/file");
 
 const storeFS = ({ stream, filename }) => {
   const uploadDir = "images";
@@ -76,7 +77,10 @@ module.exports = {
     });
   },
 
-  deleteCourse: async function() {
-    
+  deleteCourse: async function({ id }, req) {
+    const course = await Course.findById(id);
+    clearImage(course.imageUrl);
+    await Course.findByIdAndRemove(id);
+    return true;
   }
 };
