@@ -39,16 +39,16 @@ export class CourseService {
         $subtitle: String!,
         $description: String!,
         $image: Upload!,
-        $rating: Float,
-        $price: Float
+        $price: Float,
+        $sections: [SectionInput!]!
       ) {
           createCourse(courseInput: {
             title: $title,
             subtitle: $subtitle,
             description: $description,
             image: $image,
-            rating: $rating,
-            price: $price
+            price: $price,
+            sections: $sections
           }) {
             _id
           }
@@ -74,6 +74,17 @@ export class CourseService {
           description
           imageUrl
           price
+          rating
+          sections {
+            title
+            lectures {
+              _id
+              title
+              videoUrl
+              duration
+              isFree
+            }
+          }
           createdAt
           updatedAt
         }
@@ -95,8 +106,8 @@ export class CourseService {
         $subtitle: String!,
         $description: String!,
         $image: Upload,
-        $rating: Float,
-        $price: Float
+        $price: Float,
+        $sections: [SectionInput!]!
       ) {
         updateCourse(
           id: $id,
@@ -105,8 +116,8 @@ export class CourseService {
             subtitle: $subtitle,
             description: $description,
             image: $image,
-            rating: $rating,
-            price: $price
+            price: $price,
+            sections: $sections
           }) {
             _id
             title

@@ -16,6 +16,8 @@ import { CoursesComponent } from './courses/courses.component';
 import { CourseFormComponent } from './courses/course-form/course-form.component';
 import { CoursesListComponent } from './courses/courses-list/courses-list.component';
 import { ConfirmDialogComponent } from './ui/confirm-dialog/confirm-dialog.component';
+import { CourseSectionComponent } from './courses/course-form/course-section/course-section.component';
+import { CourseLectureComponent } from './courses/course-form/course-section/course-lecture/course-lecture.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,8 @@ import { ConfirmDialogComponent } from './ui/confirm-dialog/confirm-dialog.compo
     CourseFormComponent,
     CoursesListComponent,
     ConfirmDialogComponent,
+    CourseSectionComponent,
+    CourseLectureComponent,
   ],
   imports: [
     BrowserModule,

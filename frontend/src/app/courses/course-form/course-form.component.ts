@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { Router, ActivatedRoute} from '@angular/router';
 import { NotificationService } from 'src/app/services/notification.service';
 import { CourseService } from '../course.service';
@@ -23,30 +23,52 @@ export class CourseFormComponent implements OnInit {
     private route: ActivatedRoute
   ) { }
 
-  ngOnInit() {
-    this.courseForm = this.fb.group({
-      id: null,
-      title: [null, Validators.required],
-      subtitle: [null, Validators.required],
-      description: [null, Validators.required],
-      image: [null, Validators.required],
-      price: [null, Validators.required],
+  getSections(sections): FormGroup[] {
+    if (!sections) {
+      return [
+        this.fb.group({
+          title: [null, Validators.required],
+          lectures: [[]]
+        })
+      ];
+    }
+
+    const formGroups = [];
+    for (const section of sections) {
+      formGroups.push(
+        this.fb.group({
+          title: [section.title, Validators.required],
+          lectures: [[]]
+        })
+      );
+    }
+    return formGroups;
+  }
+
+  createForm(course?): FormGroup {
+    if (!course) {
+      course = {};
+    }
+    return this.fb.group({
+      id: course._id,
+      title: [course.title, Validators.required],
+      subtitle: [course.subtitle, Validators.required],
+      description: [course.description, Validators.required],
+      image: null,
+      price: [course.price, Validators.required],
+      sections: this.fb.array(this.getSections(course.sections))
     });
+  }
+
+  ngOnInit() {
+    this.courseForm = this.createForm();
 
     if (this.route.snapshot.params.id) { // editing mode
       this.id = this.route.snapshot.params.id;
       this.courseService
         .getCourse(this.id)
         .subscribe( ({ data }: any) => {
-          const course = data.course;
-          this.courseForm = this.fb.group({
-            id: course._id,
-            title: [course.title, Validators.required],
-            subtitle: [course.subtitle, Validators.required],
-            description: [course.description, Validators.required],
-            image: null,
-            price: [course.price, Validators.required],
-          });
+          this.courseForm = this.createForm(data.course);
         });
     }
   }
@@ -70,5 +92,14 @@ export class CourseFormComponent implements OnInit {
           this.router.navigate(['courses']);
         });
     }
+  }
+
+  onAddSection() {
+    (this.courseForm.get('sections') as FormArray).push(
+      this.fb.group({
+        title: [null, Validators.required],
+        lectures: [[]]
+      })
+    );
   }
 }

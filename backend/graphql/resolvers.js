@@ -87,8 +87,6 @@ module.exports = {
   },
 
   updateCourse: async function({ id, courseInput }, req) {
-    validateCourseInput(courseInput);
-
     const course = await Course.findById(id);
     if (!course) {
       const error = new Error('No course found');
@@ -96,10 +94,13 @@ module.exports = {
       throw error;
     }
 
+    validateCourseInput(courseInput);
+
     course.title = courseInput.title;
     course.subtitle = courseInput.subtitle;
     course.description = courseInput.description;
     course.price = courseInput.price;
+    course.sections = courseInput.sections;
 
     const uploadedImage = await courseInput.image;
 

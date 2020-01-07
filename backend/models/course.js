@@ -26,7 +26,17 @@ const courseSchema = new Schema(
     price: {
       type: Number,
       required: true
-    }
+    },
+    sections: [{
+      title: {
+        type: String,
+        required: true
+      },
+      lectures: {
+        type: Array,
+        requred: true
+      }
+    }]
   },
   { timestamps: true }
 );

@@ -17,27 +17,36 @@ module.exports = buildSchema(`
     }
 
     type Section {
-        _id: ID!
         title: String!
-        lessons: [Lesson!]!
+        lectures: [Lecture!]!
     }
 
-    type Lesson {
+    type Lecture {
         _id: ID!
         title: String!
-        duration: String!
         videoUrl: String!
+        duration: String
         isFree: Boolean
-        completed: Boolean
     }
 
-    input CourseInputData {
+    input CourseInput {
         title: String!
         subtitle: String!
         description: String!
         image: Upload
-        rating: Float
         price: Float
+        sections: [SectionInput!]!
+    }
+
+    input SectionInput {
+        title: String!
+        lectures: [LectureInput]
+    }
+
+    input LectureInput {
+        title: String!
+        videoUrl: String!
+        isFree: Boolean
     }
 
     type RootQuery {
@@ -46,8 +55,8 @@ module.exports = buildSchema(`
     }
 
     type RootMutation {
-        createCourse(courseInput: CourseInputData!): Course!
-        updateCourse(id: ID!, courseInput: CourseInputData!): Course!
+        createCourse(courseInput: CourseInput!): Course!
+        updateCourse(id: ID!, courseInput: CourseInput!): Course!
         deleteCourse(id: ID!): Boolean
     }
 

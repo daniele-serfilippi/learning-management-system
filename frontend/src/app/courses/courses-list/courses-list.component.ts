@@ -12,7 +12,7 @@ import { CourseService } from '../course.service';
 })
 export class CoursesListComponent implements OnInit {
   courses: [];
-  private backendUrl: string = environment.backendURL;
+  backendUrl: string = environment.backendURL;
 
   constructor(
     private courseService: CourseService,

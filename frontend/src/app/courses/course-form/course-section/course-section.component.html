@@ -1,0 +1,26 @@
+<div [formGroup]="sectionFormGroup" class="row">
+  <div class="col-10">
+    <mat-form-field>
+      <input
+        matInput
+        placeholder="Section title"
+        formControlName="title"
+        required
+      >
+      <mat-error *ngIf="sectionFormGroup.get('title').hasError('required')">
+        Section title is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div class="col-2 text-right">
+    <button
+      *ngIf="courseForm.get('sections')['controls'].length > 1"
+      matTooltip="Remove section"
+      class="remove_section_button"
+      mat-icon-button
+      color="warn"
+      type="button"
+      (click)="onRemoveSection(sectionIndex)"
+    ><mat-icon>delete_outline</mat-icon></button>
+  </div>
+</div>

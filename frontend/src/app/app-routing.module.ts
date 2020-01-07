@@ -6,9 +6,12 @@ import { CoursesListComponent } from './courses/courses-list/courses-list.compon
 
 const routes: Routes = [
   { path: '', redirectTo: '/courses', pathMatch: 'full' },
-  { path: 'courses', component: CoursesComponent, children: [
-    { path: 'new', component: CourseFormComponent },
+  { path: 'course', component: CoursesComponent, children: [
+    { path: 'create', component: CourseFormComponent },
     { path: 'edit/:id', component: CourseFormComponent },
+    { path: '', component: CoursesListComponent }
+  ]},
+  { path: 'courses', component: CoursesComponent, children: [
     { path: '', component: CoursesListComponent }
   ]},
 ];
