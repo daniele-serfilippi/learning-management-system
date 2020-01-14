@@ -4,6 +4,8 @@ import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { Router, ActivatedRoute} from '@angular/router';
 import { NotificationService } from 'src/app/services/notification.service';
 import { CourseService } from '../course.service';
+import { environment } from 'src/environments/environment';
+import { Course } from '../course.model';
 
 @Component({
   selector: 'app-course-form',
@@ -12,7 +14,10 @@ import { CourseService } from '../course.service';
 })
 export class CourseFormComponent implements OnInit {
   id: string;
+  course: Course;
   courseForm: FormGroup;
+  backendUrl: string = environment.backendURL;
+  showImageInput = false;
 
   constructor(
     private http: HttpClient,
@@ -45,7 +50,7 @@ export class CourseFormComponent implements OnInit {
     return formGroups;
   }
 
-  createForm(course?): FormGroup {
+  setForm(course?): FormGroup {
     if (!course) {
       course = {};
     }
@@ -61,14 +66,24 @@ export class CourseFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.courseForm = this.createForm();
+    this.courseForm = this.setForm();
 
     if (this.route.snapshot.params.id) { // editing mode
-      this.id = this.route.snapshot.params.id;
+      const id = this.route.snapshot.params.id;
       this.courseService
-        .getCourse(this.id)
+        .getCourse(id)
         .subscribe( ({ data }: any) => {
-          this.courseForm = this.createForm(data.course);
+          const course = data.course;
+          this.course = new Course(
+            course.title,
+            course.subtitle,
+            course.description,
+            course.imageUrl,
+            course.rating,
+            course.price,
+            course._id
+          );
+          this.courseForm = this.setForm(course);
         });
     }
   }
@@ -78,16 +93,27 @@ export class CourseFormComponent implements OnInit {
     if (formValue.image && formValue.image.files) {
       formValue.image = formValue.image.files[0];
     }
-    if (this.id) { // edit mode
+    if (this.course.id) { // edit mode
       this.courseService
-        .updateCourse(this.id, formValue)
-        .subscribe(res => {
+        .updateCourse(this.course.id, formValue)
+        .subscribe(( { data }: any) => {
+          const updatedCourse = data.updateCourse;
+          this.course = new Course(
+            updatedCourse.title,
+            updatedCourse.subtitle,
+            updatedCourse.description,
+            updatedCourse.imageUrl,
+            updatedCourse.rating,
+            updatedCourse.price,
+            updatedCourse._id
+          );
+          this.courseForm = this.setForm(updatedCourse);
           this.notificationService.showSuccess('Course successfully updated');
         });
     } else {
       this.courseService
         .createCourse(formValue)
-        .subscribe(res => {
+        .subscribe(course => {
           this.notificationService.showSuccess('Course successfully created');
           this.router.navigate(['courses']);
         });
@@ -101,5 +127,9 @@ export class CourseFormComponent implements OnInit {
         lectures: [[]]
       })
     );
+  }
+
+  onChangeImage() {
+    this.showImageInput = true;
   }
 }

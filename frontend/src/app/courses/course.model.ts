@@ -1,4 +1,5 @@
 export class Course {
+  public id: string;
   public title: string;
   public subtitle: string;
   public description: string;
@@ -13,7 +14,9 @@ export class Course {
     imageUrl: string,
     rating: number,
     price: number,
+    id?: string
   ) {
+    this.id = id;
     this.title = title;
     this.subtitle = subtitle;
     this.description = description;

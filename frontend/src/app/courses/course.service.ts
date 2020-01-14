@@ -126,6 +126,16 @@ export class CourseService {
             imageUrl
             rating
             price
+            sections {
+              title
+              lectures {
+                _id
+                title
+                videoUrl
+                duration
+                isFree
+              }
+            }
           }
       }
     `;

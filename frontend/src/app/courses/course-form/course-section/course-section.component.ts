@@ -18,9 +18,7 @@ export class CourseSectionComponent implements OnInit {
     private dialog: MatDialog,
   ) { }
 
-  ngOnInit() {
-    console.log(this.sectionFormGroup.get('title').value)
-  }
+  ngOnInit() { }
 
   onRemoveSection(index: number) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
