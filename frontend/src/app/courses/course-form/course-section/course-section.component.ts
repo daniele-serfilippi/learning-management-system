@@ -36,4 +36,8 @@ export class CourseSectionComponent implements OnInit {
       }
     });
   }
+
+  onAddLecture() {
+
+  }
 }

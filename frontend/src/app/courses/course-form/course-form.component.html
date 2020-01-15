@@ -5,7 +5,7 @@
 
 <form [formGroup]="courseForm" novalidate (ngSubmit)="onSubmit()">
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-5">
         <input
           *ngIf="id"
           type="hidden"
@@ -98,12 +98,12 @@
         </mat-card-actions>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-7">
       <h4>Sections</h4>
       <mat-accordion formArrayName="sections" multi="true">
         <mat-expansion-panel
           *ngFor="let section of courseForm.get('sections')['controls']; let i = index;"
-          [expanded]="i === 0"
+          [expanded]="i === 0 || ! section.title"
         >
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -126,11 +126,14 @@
 
       <button
         class="add_section_button"
-        mat-raised-button
+        mat-stroked-button
         color="primary"
         type="button"
         (click)="onAddSection()"
-      >Add section</button>
+      >
+        <mat-icon>add</mat-icon>
+        Add section
+      </button>
 
     </div>
   </div>

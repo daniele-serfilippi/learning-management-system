@@ -1,26 +1,41 @@
-<div [formGroup]="sectionFormGroup" class="row">
-  <div class="col-10">
-    <mat-form-field>
-      <input
-        matInput
-        placeholder="Section title"
-        formControlName="title"
-        required
-      >
-      <mat-error *ngIf="sectionFormGroup.get('title').hasError('required')">
-        Section title is <strong>required</strong>
-      </mat-error>
-    </mat-form-field>
-  </div>
-  <div class="col-2 text-right">
+<div [formGroup]="sectionFormGroup">
+  <mat-form-field>
+    <input
+      matInput
+      placeholder="Section title"
+      formControlName="title"
+      required
+    >
+    <mat-error *ngIf="sectionFormGroup.get('title').hasError('required')">
+      Section title is <strong>required</strong>
+    </mat-error>
+  </mat-form-field>
+
+  <app-course-lecture></app-course-lecture>
+
+  <mat-divider class="mt-3 mb-3"></mat-divider>
+
+  <div class="d-flex justify-content-between">
+    <button
+      class="add_section_button"
+      mat-button
+      color="primary"
+      type="button"
+      (click)="onAddLecture()"
+    >
+      <mat-icon>add</mat-icon>
+      Add lecture
+    </button>
+
     <button
       *ngIf="courseForm.get('sections')['controls'].length > 1"
-      matTooltip="Remove section"
-      class="remove_section_button"
-      mat-icon-button
+      mat-button
       color="warn"
       type="button"
       (click)="onRemoveSection(sectionIndex)"
-    ><mat-icon>delete_outline</mat-icon></button>
+    >
+      <mat-icon>delete_outline</mat-icon>
+      Remove section
+    </button>
   </div>
 </div>
