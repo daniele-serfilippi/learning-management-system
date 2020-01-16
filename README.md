@@ -25,6 +25,7 @@
 - Course reviews
 - Course resources
 - Course notes
+- PWA
 
 To use:
 
