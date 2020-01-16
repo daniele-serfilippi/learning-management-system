@@ -1,14 +1,18 @@
 <div class="row">
   <div class="col-md-4" *ngFor="let course of courses">
     <mat-card class="course-card">
-      <img mat-card-image src="{{ backendUrl + course.imageUrl }}" alt="{{ course.title }}">
+      <a [routerLink]="['/course/edit', course._id]">
+        <img mat-card-image src="{{ backendUrl + course.imageUrl }}" alt="{{ course.title }}">
+      </a>
       <mat-card-content>
-        <h2>{{ course.title }}</h2>
+        <a [routerLink]="['/course/edit', course._id]">
+          <h2>{{ course.title }}</h2>
+        </a>
         <p>{{ course.subtitle }}</p>
       </mat-card-content>
-      <mat-card-actions>
-        <button mat-button [routerLink]="['/course/edit', course._id]">Edit</button>
-        <button mat-button (click)="onDeleteCourse(course._id)">Delete</button>
+      <mat-card-actions class="d-flex justify-content-between">
+        <button mat-button (click)="onDeleteCourse(course._id)">Edit</button>
+        <button mat-button color="warn" (click)="onDeleteCourse(course._id)">Delete</button>
       </mat-card-actions>
     </mat-card>
   </div>

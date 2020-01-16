@@ -36,7 +36,7 @@ export class CoursesListComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: new ConfirmDialogModel(
         'Confirm deletion',
-        'Are you sure you want to delete the course?'
+        'WARNING: This operation is not recoverable. Are you sure you want to delete the course and all its contents?'
       ),
       maxWidth: '400px'
     });
