@@ -67,7 +67,7 @@
             placeholder="Preview image"
             valuePlaceholder="No image selected"
             [accept]="'.png,.jpg,.jpeg'"
-            [attr.required]="!id"
+            [attr.required]="!editMode"
           ></ngx-mat-file-input>
           <mat-icon matSuffix>image</mat-icon>
           <button mat-icon-button matSuffix *ngIf="!imageInput.empty" (click)="imageInput.clear($event)">
