@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=production MONGODB_CONNECTION_URI=<your_connection_uri_here> PORT=8080 node app.js",
+    "start": "NODE_ENV=production PORT=8080 node app.js",
     "backend": "nodemon app.js",
     "frontend": "npm run start --prefix ../frontend",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\""
