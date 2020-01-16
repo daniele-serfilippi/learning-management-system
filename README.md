@@ -1,6 +1,8 @@
 # A complete Learning Management System
 
 ## A modern and advanced SPA with Angular, NodeJS, MongoDB and GraphQL
+
+DEMO available here: <https://ser-learning-management-system.herokuapp.com/>
   
 ### Frondend
 
