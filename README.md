@@ -31,5 +31,5 @@ DEMO available here: <https://ser-learning-management-system.herokuapp.com/>
 
 To use:
 
-    cd backend
-    npm run dev
+    npm --prefix backend run dev
+    open http://localhost:4200/

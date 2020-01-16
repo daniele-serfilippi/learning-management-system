@@ -13,7 +13,7 @@ import { Course } from '../course.model';
   styleUrls: ['./course-form.component.sass']
 })
 export class CourseFormComponent implements OnInit {
-  id: string;
+  editMode: boolean;
   course: Course;
   courseForm: FormGroup;
   backendUrl: string = environment.backendURL;
@@ -73,6 +73,7 @@ export class CourseFormComponent implements OnInit {
       this.courseService
         .getCourse(id)
         .subscribe( ({ data }: any) => {
+          this.editMode = true;
           const course = data.course;
           this.course = new Course(
             course.title,
@@ -93,7 +94,7 @@ export class CourseFormComponent implements OnInit {
     if (formValue.image && formValue.image.files) {
       formValue.image = formValue.image.files[0];
     }
-    if (this.course.id) { // edit mode
+    if (this.editMode) {
       this.courseService
         .updateCourse(this.course.id, formValue)
         .subscribe(( { data }: any) => {

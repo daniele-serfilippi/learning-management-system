@@ -1,13 +1,13 @@
 <h1 class="text-center">
-  <span *ngIf="!id">Create course</span>
-  <span *ngIf="id">Edit course</span>
+  <span *ngIf="!editMode">Create course</span>
+  <span *ngIf="editMode">Edit course</span>
 </h1>
 
 <form [formGroup]="courseForm" novalidate (ngSubmit)="onSubmit()">
   <div class="row">
     <div class="col-md-5">
         <input
-          *ngIf="id"
+          *ngIf="editMode"
           type="hidden"
           formControlName="id"
         />
@@ -60,7 +60,7 @@
           </div>
         </div>
 
-        <mat-form-field *ngIf="course && course.id && showImageInput">
+        <mat-form-field *ngIf="!editMode || (editMode && showImageInput)">
           <ngx-mat-file-input
             #imageInput
             formControlName="image"
