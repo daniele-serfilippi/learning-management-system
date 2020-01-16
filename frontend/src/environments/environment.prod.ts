@@ -1,4 +1,4 @@
 export const environment = {
-  backendURL: 'https://ser-learning-management-system.herokuapp.com:8080/',
+  backendURL: 'https://ser-learning-management-system.herokuapp.com/',
   production: true
 };

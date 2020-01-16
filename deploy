@@ -1,0 +1,5 @@
+#!/bin/bash
+cd frontend
+ng build --prod
+cd ..
+git subtree push --prefix backend heroku master
