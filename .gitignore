@@ -3,4 +3,3 @@ frontend/node_modules
 
 backend/nodemon.json
 backend/images/*
-backend/angular/*
