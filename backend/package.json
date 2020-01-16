@@ -1,7 +1,7 @@
 {
   "name": "lms",
   "version": "1.0.0",
-  "description": "A NodeJS - GraphQL - MongoDB Learning Management System",
+  "description": "An Learning Management System with Angular - NodeJS - GraphQL - MongoDB ",
   "main": "app.js",
   "engines": {
     "node": "12.13.0"

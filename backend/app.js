@@ -13,6 +13,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/', express.static(path.join(__dirname, 'angular')));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -26,7 +27,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
 
 app.use(
   '/graphql',
@@ -54,6 +54,10 @@ app.use((error, req, res, next) => {
   const message = error.message;
   const data = error.data;
   res.status(status).json({ message: message, data: data });
+});
+
+app.use((req, res, next) => {
+  res.sendFile(path.join(__dirname, "angular", "index.html"));
 });
 
 mongoose
