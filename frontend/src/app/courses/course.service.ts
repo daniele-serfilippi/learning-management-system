@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { Course } from './course.model';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +14,8 @@ export class CourseService {
   private courses: Course[] = [];
 
   constructor(
-    private apollo: Apollo
+    private apollo: Apollo,
+    private http: HttpClient
   ) { }
 
   getCourses() {
@@ -164,5 +169,32 @@ export class CourseService {
         id
       }
     });
+  }
+
+  uploadVideoLecture(courseId: string, sectionId: string, video: File) {
+      const formData = new FormData();
+      formData.append('courseId', courseId);
+      formData.append('sectionId', sectionId);
+      formData.append('video', video);
+
+      console.log(formData);
+
+      return this.http.post(environment.backendURL + 'uploadVideoLecture', formData, {
+        reportProgress: true,
+        observe: 'events'
+      }).pipe(
+        catchError((error: HttpErrorResponse) => {
+          let errorMessage = '';
+          if (error.error instanceof ErrorEvent) {
+            // Get client-side error
+            errorMessage = error.error.message;
+          } else {
+            // Get server-side error
+            errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+          }
+          console.log(errorMessage);
+          return throwError(errorMessage);
+        })
+      );
   }
 }

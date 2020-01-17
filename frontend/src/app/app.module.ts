@@ -18,6 +18,8 @@ import { CoursesListComponent } from './courses/courses-list/courses-list.compon
 import { ConfirmDialogComponent } from './ui/confirm-dialog/confirm-dialog.component';
 import { CourseSectionComponent } from './courses/course-form/course-section/course-section.component';
 import { CourseLectureComponent } from './courses/course-form/course-section/course-lecture/course-lecture.component';
+import { DragDropFileUploadComponent } from './ui/drag-drop-file-upload/drag-drop-file-upload.component';
+import { DragDropFileUploadDirective } from './ui/drag-drop-file-upload/drag-drop-file-upload.directive';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { CourseLectureComponent } from './courses/course-form/course-section/cou
     ConfirmDialogComponent,
     CourseSectionComponent,
     CourseLectureComponent,
+    DragDropFileUploadComponent,
+    DragDropFileUploadDirective,
   ],
   imports: [
     BrowserModule,

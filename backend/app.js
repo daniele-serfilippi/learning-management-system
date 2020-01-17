@@ -1,22 +1,43 @@
 const path = require('path');
+const fs = require('fs');
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const graphqlHttp = require('express-graphql');
 const { graphqlUploadExpress } = require('graphql-upload')
-
+const multer = require('multer');
+const morgan = require('morgan');
 const graphqlSchema = require('./graphql/schema');
 const graphqlResolver = require('./graphql/resolvers');
+const { clearMedia } = require("./utils/file");
+
+const environment = process.env.NODE_ENV || 'development';
 
 const app = express();
 
+// loggin with morgan
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, 'access.log'),
+  { flags: 'a' }
+);
+app.use(morgan('combined', { stream: accessLogStream }));
+
 app.use(bodyParser.json());
 
+// static resources
+if (!fs.existsSync("./images")){
+  fs.mkdirSync("./images");
+}
+if (!fs.existsSync("./videos")){
+  fs.mkdirSync("./videos");
+}
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/videos', express.static(path.join(__dirname, 'videos')));
 app.use('/', express.static(path.join(__dirname, 'angular')));
 
+// CORS headers
 app.use((req, res, next) => {
-  if (process.env.NODE_ENV !== 'production') {
+  if (environment !== 'production') {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
       "Access-Control-Allow-Methods",
@@ -30,6 +51,38 @@ app.use((req, res, next) => {
   next();
 });
 
+// video upload
+const videoStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'videos');
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().getTime() + '-' + file.originalname);
+  }
+});
+
+const videoFilter = (req, file, cb) => {
+  if (file.mimetype === 'video/mp4') {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+app.use(multer({ storage: videoStorage, fileFilter: videoFilter }).single('video'));
+
+app.post('/uploadVideoLecture', (req, res, next) => {
+  if (!req.file) {
+    return res.status(200).json({ message: 'No video provided' });
+  }
+  if (req.body.oldPath) {
+    clearMedia(req.body.oldPath);
+  }
+  return res
+    .status(201)
+    .json({ message: 'File stored.', filePath: req.file.path });
+});
+
+// GraphQL
 app.use(
   '/graphql',
   graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),

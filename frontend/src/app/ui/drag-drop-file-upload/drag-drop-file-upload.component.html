@@ -1,0 +1,19 @@
+<div
+  class="file-uploader d-flex align-items-center justify-content-center text-center p-2 mr-3"
+  appDragDropFileUpload
+  (click)="fileField.click()"
+  (fileDropped)="upload($event)"
+>
+  <span>{{placeholder}}</span>
+  <input type="file" name="file" #fileField (change)="upload($event.target.files)" hidden [accept]="'.mp4'">
+</div>
+
+<mat-progress-bar *ngIf="progress" mode="determinate" [value]="progress"></mat-progress-bar>
+
+<div *ngIf="successMsg" class="success-msg">
+  {{successMsg}}
+</div>
+
+<mat-error *ngIf="error">
+  Only <strong>mp4</strong> file allowed
+</mat-error>

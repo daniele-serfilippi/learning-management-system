@@ -3,16 +3,13 @@ const validator = require("validator");
 const { GraphQLUpload } = require("graphql-upload");
 
 const Course = require("../models/course");
-const { clearImage } = require("../utils/file");
+const { clearMedia } = require("../utils/file");
 
 const storeFS = ({ stream, filename }) => {
   const uploadDir = "images";
   const newFilename = new Date().getTime() + "-" + filename;
   const path = `${uploadDir}/${newFilename}`;
 
-  if (!fs.existsSync("./" + uploadDir)){
-    fs.mkdirSync("./" + uploadDir);
-  }
   return new Promise((resolve, reject) =>
     stream
       .on("error", error => {
@@ -108,8 +105,6 @@ module.exports = {
 
     const uploadedImage = await courseInput.image;
 
-    console.log(uploadedImage);
-
     if (uploadedImage) {
       const oldImageUrl = course.imageUrl;
       const { filename, mimetype, createReadStream } = uploadedImage;
@@ -122,7 +117,7 @@ module.exports = {
     const updatedCourse = await course.save();
 
     if (updatedCourse && typeof oldImageUrl !== 'undefined') {
-      clearImage(oldImageUrl);
+      clearMedia(oldImageUrl);
     }
 
     return {
@@ -135,7 +130,7 @@ module.exports = {
 
   deleteCourse: async function({ id }, req) {
     const course = await Course.findById(id);
-    clearImage(course.imageUrl);
+    clearMedia(course.imageUrl);
     await Course.findByIdAndRemove(id);
     return true;
   }
