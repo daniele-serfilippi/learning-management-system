@@ -1,17 +1,11 @@
 <div
-  class="file-uploader d-flex align-items-center justify-content-center text-center p-2 mr-3"
+  class="file-uploader d-flex align-items-center justify-content-center text-center p-2"
   appDragDropFileUpload
   (click)="fileField.click()"
-  (fileDropped)="upload($event)"
+  (fileDropped)="onReceivingFiles($event)"
 >
   <span>{{placeholder}}</span>
-  <input type="file" name="file" #fileField (change)="upload($event.target.files)" hidden [accept]="'.mp4'">
-</div>
-
-<mat-progress-bar *ngIf="progress" mode="determinate" [value]="progress"></mat-progress-bar>
-
-<div *ngIf="successMsg" class="success-msg">
-  {{successMsg}}
+  <input type="file" name="file" #fileField (change)="onReceivingFiles($event.target.files)" hidden [accept]="'.mp4'">
 </div>
 
 <mat-error *ngIf="error">

@@ -4,7 +4,7 @@ import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { Router, ActivatedRoute} from '@angular/router';
 
 import { NotificationService } from 'src/app/services/notification.service';
-import { CourseService } from '../course.service';
+import { CourseService } from 'src/app/services/course.service';
 import { environment } from 'src/environments/environment';
 import { Course } from '../course.model';
 
@@ -16,7 +16,7 @@ import { Course } from '../course.model';
 export class CourseFormComponent implements OnInit {
   editMode: boolean;
   course: Course;
-  courseForm: FormGroup;
+  courseFormGroup: FormGroup;
   backendUrl: string = environment.backendURL;
   showImageInput = false;
 
@@ -29,26 +29,53 @@ export class CourseFormComponent implements OnInit {
     private route: ActivatedRoute
   ) { }
 
-  getSections(sections): FormGroup[] {
-    if (!sections) {
+  getFormGroupLectures(lectures: any): FormGroup[] {
+    if (!lectures || lectures.length === 0) {
       return [
         this.fb.group({
+          id: null,
           title: [null, Validators.required],
-          lectures: [[]]
+          videoUrl: null
         })
       ];
     }
 
-    const formGroups = [];
-    for (const section of sections) {
-      formGroups.push(
+    const formGroup = [];
+    for (const lecture of lectures) {
+      formGroup.push(
         this.fb.group({
-          title: [section.title, Validators.required],
-          lectures: [[]]
+          id: lecture._id,
+          title: [lecture.title, Validators.required],
+          videoUrl: lecture.videoUrl
         })
       );
     }
-    return formGroups;
+    return formGroup;
+  }
+
+  getFormGroupSections(sections: any): FormGroup[] {
+    if (!sections) {
+      return [
+        this.fb.group({
+          id: null,
+          title: [null, Validators.required],
+          lectures: this.fb.array(this.getFormGroupLectures(null))
+        })
+      ];
+    }
+
+    const formGroup = [];
+    for (const section of sections) {
+      formGroup.push(
+        this.fb.group({
+          id: section._id,
+          title: [section.title, Validators.required],
+          lectures: this.fb.array(this.getFormGroupLectures(section.lectures))
+        })
+      );
+    }
+
+    return formGroup;
   }
 
   setForm(course?): FormGroup {
@@ -62,12 +89,12 @@ export class CourseFormComponent implements OnInit {
       description: [course.description, Validators.required],
       image: null,
       price: [course.price, Validators.required],
-      sections: this.fb.array(this.getSections(course.sections))
+      sections: this.fb.array(this.getFormGroupSections(course.sections))
     });
   }
 
   ngOnInit() {
-    this.courseForm = this.setForm();
+    this.courseFormGroup = this.setForm();
 
     if (this.route.snapshot.params.id) { // editing mode
       const id = this.route.snapshot.params.id;
@@ -85,13 +112,13 @@ export class CourseFormComponent implements OnInit {
             course.price,
             course._id
           );
-          this.courseForm = this.setForm(course);
+          this.courseFormGroup = this.setForm(course);
         });
     }
   }
 
   onSubmit() {
-    const formValue = {...this.courseForm.value};
+    const formValue = {...this.courseFormGroup.value};
     if (formValue.image && formValue.image.files) {
       formValue.image = formValue.image.files[0];
     }
@@ -109,7 +136,7 @@ export class CourseFormComponent implements OnInit {
             updatedCourse.price,
             updatedCourse._id
           );
-          this.courseForm = this.setForm(updatedCourse);
+          this.courseFormGroup = this.setForm(updatedCourse);
           this.notificationService.showSuccess('Course successfully updated');
         });
     } else {
@@ -123,7 +150,7 @@ export class CourseFormComponent implements OnInit {
   }
 
   onAddSection() {
-    (this.courseForm.get('sections') as FormArray).push(
+    (this.courseFormGroup.get('sections') as FormArray).push(
       this.fb.group({
         title: [null, Validators.required],
         lectures: [[]]

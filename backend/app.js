@@ -79,7 +79,7 @@ app.post('/uploadVideoLecture', (req, res, next) => {
   }
   return res
     .status(201)
-    .json({ message: 'File stored.', filePath: req.file.path });
+    .json({ message: 'Video successfully uploaded', filePath: req.file.path });
 });
 
 // GraphQL

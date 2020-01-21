@@ -1,9 +1,13 @@
 const fs = require("fs");
 const validator = require("validator");
 const { GraphQLUpload } = require("graphql-upload");
+const { getVideoDurationInSeconds } = require('get-video-duration');
+
+const { clearMedia } = require("../utils/file");
+const { toHHMMSS } = require("../utils/datetime");
 
 const Course = require("../models/course");
-const { clearMedia } = require("../utils/file");
+const Lecture = require("../models/lecture");
 
 const storeFS = ({ stream, filename }) => {
   const uploadDir = "images";
@@ -69,8 +73,7 @@ module.exports = {
 
     const course = new Course({
       ...courseInput,
-      imageUrl: fileLocation,
-      rating: 0
+      imageUrl: fileLocation
     });
 
     const createdCourse = await course.save();
@@ -83,7 +86,7 @@ module.exports = {
   },
 
   course: async function({ id }, req) {
-    const course = await Course.findById(id);
+    const course = await Course.findById(id).populate('sections.lectures');
     return course;
   },
 
@@ -101,7 +104,51 @@ module.exports = {
     course.subtitle = courseInput.subtitle;
     course.description = courseInput.description;
     course.price = courseInput.price;
-    course.sections = courseInput.sections;
+    // saving lectures
+    console.log('SECTIONS: ', courseInput.sections)
+    for (const section of courseInput.sections) {
+      console.log('LECTURES: ', section.lectures)
+      for (const lecture of section.lectures) {
+        let lectureDocument;
+        if (lecture.id) {
+          lectureDocument = await Lecture.findById(lecture.id);
+          if (!lectureDocument) {
+            const error = new Error('No lecture found with ID ' + lecture.id);
+            error.code = 404;
+            throw error;
+          }
+        } else {
+          lectureDocument = new Lecture();
+        }
+
+        console.log('DOC: ', lectureDocument)
+
+        const oldVideoUrl = lectureDocument.videoUrl;
+
+        lectureDocument.title = lecture.title;
+        lectureDocument.videoUrl = lecture.videoUrl;
+        if (! lectureDocument.duration || oldVideoUrl !== lecture.videoUrl) {
+          const duration = await getVideoDurationInSeconds(lecture.videoUrl);
+          lectureDocument.duration = toHHMMSS(duration);
+        }
+        const savedLecture = await lectureDocument.save();
+        lecture.id = savedLecture.id;
+
+        if (oldVideoUrl && oldVideoUrl !== lecture.videoUrl) {
+          clearMedia(oldVideoUrl);
+        }
+        
+      }
+    }
+    // saving sections
+    course.sections = courseInput.sections.map(section => {
+      return {
+        ...section,
+        lectures: section.lectures.map(lecture => {
+          return lecture.id ? lecture.id : null // save lecture ids only
+        })
+      }
+    });
 
     const uploadedImage = await courseInput.image;
 

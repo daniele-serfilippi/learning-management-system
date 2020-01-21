@@ -19,23 +19,25 @@ const courseSchema = new Schema(
       type: String,
       required: true
     },
-    rating: {
-      type: Number,
-      required: false
-    },
     price: {
       type: Number,
       required: true
+    },
+    rating: {
+      type: Number,
+      required: false,
+      default: 0
     },
     sections: [{
       title: {
         type: String,
         required: true
       },
-      lectures: {
-        type: Array,
-        requred: true
-      }
+      lectures: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Lecture',
+        required: true
+      }]
     }]
   },
   { timestamps: true }

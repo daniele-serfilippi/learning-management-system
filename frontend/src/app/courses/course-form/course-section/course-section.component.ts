@@ -10,7 +10,7 @@ import { MatDialog } from '@angular/material';
 })
 export class CourseSectionComponent implements OnInit {
   @Input() sectionFormGroup: FormGroup;
-  @Input() courseForm: FormGroup;
+  @Input() courseFormGroup: FormGroup;
   @Input() sectionIndex: number;
 
   constructor(
@@ -31,7 +31,7 @@ export class CourseSectionComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        const control = this.courseForm.controls['sections'] as FormArray;
+        const control = this.courseFormGroup.controls['sections'] as FormArray;
         control.removeAt(index);
       }
     });

@@ -17,6 +17,7 @@ module.exports = buildSchema(`
     }
 
     type Section {
+        _id: ID!
         title: String!
         lectures: [Lecture!]!
     }
@@ -39,13 +40,15 @@ module.exports = buildSchema(`
     }
 
     input SectionInput {
+        id: ID
         title: String!
         lectures: [LectureInput]
     }
 
     input LectureInput {
+        id: ID
         title: String!
-        videoUrl: String!
+        videoUrl: String
         isFree: Boolean
     }
 

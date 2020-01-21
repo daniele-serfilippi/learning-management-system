@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { Course } from './course.model';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+
 import { environment } from 'src/environments/environment';
+import { Course } from 'src/app/courses/course.model';
 
 @Injectable({
   providedIn: 'root'
@@ -81,6 +82,7 @@ export class CourseService {
           price
           rating
           sections {
+            _id
             title
             lectures {
               _id
@@ -171,13 +173,12 @@ export class CourseService {
     });
   }
 
-  uploadVideoLecture(courseId: string, sectionId: string, video: File) {
+  uploadVideoLecture(video: File, lectureId: string, sectionId: string, courseId: string) {
       const formData = new FormData();
-      formData.append('courseId', courseId);
+      formData.append('lectureId', lectureId);
       formData.append('sectionId', sectionId);
+      formData.append('courseId', courseId);
       formData.append('video', video);
-
-      console.log(formData);
 
       return this.http.post(environment.backendURL + 'uploadVideoLecture', formData, {
         reportProgress: true,

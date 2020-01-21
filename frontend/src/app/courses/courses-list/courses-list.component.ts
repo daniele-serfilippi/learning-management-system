@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/ui/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material';
 import { NotificationService } from 'src/app/services/notification.service';
-import { CourseService } from '../course.service';
+import { CourseService } from 'src/app/services/course.service';
 
 @Component({
   selector: 'app-courses-list',

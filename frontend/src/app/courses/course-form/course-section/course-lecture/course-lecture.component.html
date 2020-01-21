@@ -1,37 +1,68 @@
-<div class="lecture-container d-flex flex-row mb-4 p-3 rounded">
+<div [formGroup]="lectureFormGroup">
+  <input
+    type="hidden"
+    formControlName="id"
+  />
 
-  <app-drag-drop-file-upload placeholder="Drag video or click"></app-drag-drop-file-upload>
+  <input
+    type="hidden"
+    formControlName="videoUrl"
+  />
 
-  <div class="d-flex flex-column flex-grow-1">
-    <div>
-      <mat-form-field>
-        <input
-          matInput
-          placeholder="Lecture title"
-          required
-        >
-        <!-- <mat-error *ngIf="sectionFormGroup.get('title').hasError('required')">
-          Section title is <strong>required</strong>
-        </mat-error> -->
-      </mat-form-field>
+  <div class="lecture-container d-flex flex-row mb-4 p-3 rounded">
+
+    <div class="d-flex flex-column flex-grow-1">
+      <div>
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Lecture title"
+            formControlName="title"
+            required
+          >
+          <mat-error *ngIf="lectureFormGroup.get('title').hasError('required')">
+            Lecture title is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="d-flex">
+        <button
+          *ngIf=""
+          matTooltip="Remove lecture"
+          mat-icon-button
+          color="warn"
+          type="button"
+          (click)="'onRemoveLecture(lectureIndex)'"
+        ><mat-icon>delete_outline</mat-icon></button>
+      </div>
     </div>
 
-    <div class="d-flex justify-content-between">
-      <button
-        matTooltip="Change video"
-        mat-icon-button
-        color="primary"
-        type="button"
-        (click)="'onChangeVideo(lectureIndex)'"
-      ><mat-icon>cloud_upload</mat-icon></button>
+    <div *ngIf="lectureFormGroup.get('title').value" class="video-container text-center ml-3">
+      <video *ngIf="videoUrl" controls preload="metadata" [src]="backendURL + videoUrl">
+        Your browser does not support HTML5 video.
+      </video>
 
-      <button
-        matTooltip="Remove lecture"
-        mat-icon-button
-        color="warn"
-        type="button"
-        (click)="'onRemoveLecture(lectureIndex)'"
-      ><mat-icon>delete_outline</mat-icon></button>
+      <app-drag-drop-file-upload
+        [className]="videoUrl ? 'hidden' : ''"
+        placeholder="Drag video or click"
+        [onChangeVideo]="changeVideoSubject.asObservable()"
+      ></app-drag-drop-file-upload>
+
+      <mat-progress-bar *ngIf="progress" mode="determinate" [value]="progress"></mat-progress-bar>
+
+      <div>
+        <button
+          *ngIf="lectureFormGroup.get('title').value && videoUrl && !progress"
+          class="flexAlignEnd"
+          matTooltip="Change video"
+          mat-icon-button
+          color="primary"
+          type="button"
+          (click)="onChangeVideo()"
+        ><mat-icon>cloud_upload</mat-icon></button>
+      </div>
     </div>
+
   </div>
 </div>

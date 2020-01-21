@@ -1,9 +1,11 @@
-const path = require('path');
-const fs = require('fs');
+const path = require("path");
+const fs = require("fs");
 
 const clearMedia = filePath => {
-  filePath = path.join(__dirname, '..', filePath);
-  fs.unlink(filePath, err => console.log(err));
+  if (filePath) {
+    filePath = path.join(__dirname, "..", filePath);
+    fs.unlink(filePath, err => console.log(err));
+  }
 };
 
 exports.clearMedia = clearMedia;

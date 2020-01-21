@@ -3,15 +3,14 @@
   <span *ngIf="editMode">Edit course</span>
 </h1>
 
-<form [formGroup]="courseForm" novalidate (ngSubmit)="onSubmit()">
+<form [formGroup]="courseFormGroup" novalidate (ngSubmit)="onSubmit()">
+  <input
+    *ngIf="editMode"
+    type="hidden"
+    formControlName="id"
+  />
   <div class="row">
     <div class="col-md-5">
-        <input
-          *ngIf="editMode"
-          type="hidden"
-          formControlName="id"
-        />
-
         <mat-form-field>
           <input
             matInput
@@ -19,7 +18,7 @@
             formControlName="title"
             required
           >
-          <mat-error *ngIf="courseForm.controls['title'].hasError('required')">
+          <mat-error *ngIf="courseFormGroup.controls['title'].hasError('required')">
             Title is <strong>required</strong>
           </mat-error>
         </mat-form-field>
@@ -31,7 +30,7 @@
             formControlName="subtitle"
             required
           >
-          <mat-error *ngIf="courseForm.controls['subtitle'].hasError('required')">
+          <mat-error *ngIf="courseFormGroup.controls['subtitle'].hasError('required')">
             Subitle is <strong>required</strong>
           </mat-error>
         </mat-form-field>
@@ -43,7 +42,7 @@
             formControlName="description"
             required
           ></textarea>
-          <mat-error *ngIf="courseForm.controls['description'].hasError('required')">
+          <mat-error *ngIf="courseFormGroup.controls['description'].hasError('required')">
             Description is <strong>required</strong>
           </mat-error>
         </mat-form-field>
@@ -73,7 +72,7 @@
           <button mat-icon-button matSuffix *ngIf="!imageInput.empty" (click)="imageInput.clear($event)">
             <mat-icon>clear</mat-icon>
           </button>
-          <mat-error *ngIf="courseForm.controls['image'].hasError('required')">
+          <mat-error *ngIf="courseFormGroup.controls['image'].hasError('required')">
             Image is <strong>required</strong>
           </mat-error>
         </mat-form-field>
@@ -93,7 +92,7 @@
             mat-raised-button
             color="primary"
             type="submit"
-            [disabled]="courseForm.invalid"
+            [disabled]="courseFormGroup.invalid"
           >Submit</button>
         </mat-card-actions>
     </div>
@@ -102,7 +101,7 @@
       <h4>Sections</h4>
       <mat-accordion formArrayName="sections" multi="true">
         <mat-expansion-panel
-          *ngFor="let section of courseForm.get('sections')['controls']; let i = index;"
+          *ngFor="let section of courseFormGroup.get('sections')['controls']; let i = index;"
           [expanded]="i === 0 || ! section.title"
         >
           <mat-expansion-panel-header>
@@ -117,7 +116,7 @@
           <div [formGroupName]="i">
             <app-course-section
               [sectionFormGroup]="section"
-              [courseForm]="courseForm"
+              [courseFormGroup]="courseFormGroup"
               [sectionIndex]="i"
             ></app-course-section>
           </div>
@@ -130,6 +129,7 @@
         color="primary"
         type="button"
         (click)="onAddSection()"
+        [disabled]="courseFormGroup.invalid"
       >
         <mat-icon>add</mat-icon>
         Add section

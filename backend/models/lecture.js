@@ -8,17 +8,19 @@ const lectureSchema = new Schema({
     },
     videoUrl: {
         type: String,
-        required: true
+        required: false
     },
     duration: {
         type: String,
-        required: true
+        required: false
     },
     isFree: {
         type: Boolean,
-        required: true,
+        required: false,
         default: false
     }
-});
+},
+{ timestamps: true }
+);
 
 module.exports = mongoose.model("Lecture", lectureSchema);
