@@ -24,8 +24,8 @@ module.exports = buildSchema(`
 
     type Lecture {
         _id: ID!
-        title: String!
-        videoUrl: String!
+        title: String
+        videoUrl: String
         duration: String
         isFree: Boolean
     }

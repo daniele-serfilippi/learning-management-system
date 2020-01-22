@@ -35,7 +35,8 @@ export class CourseFormComponent implements OnInit {
         this.fb.group({
           id: null,
           title: [null, Validators.required],
-          videoUrl: null
+          videoUrl: null,
+          isFree: false
         })
       ];
     }
@@ -46,7 +47,8 @@ export class CourseFormComponent implements OnInit {
         this.fb.group({
           id: lecture._id,
           title: [lecture.title, Validators.required],
-          videoUrl: lecture.videoUrl
+          videoUrl: lecture.videoUrl,
+          isFree: lecture.isFree
         })
       );
     }
@@ -126,17 +128,18 @@ export class CourseFormComponent implements OnInit {
       this.courseService
         .updateCourse(this.course.id, formValue)
         .subscribe(( { data }: any) => {
-          const updatedCourse = data.updateCourse;
-          this.course = new Course(
-            updatedCourse.title,
-            updatedCourse.subtitle,
-            updatedCourse.description,
-            updatedCourse.imageUrl,
-            updatedCourse.rating,
-            updatedCourse.price,
-            updatedCourse._id
-          );
-          this.courseFormGroup = this.setForm(updatedCourse);
+          // const updatedCourse = data.updateCourse;
+          // console.log(updatedCourse)
+          // this.course = new Course(
+          //   updatedCourse.title,
+          //   updatedCourse.subtitle,
+          //   updatedCourse.description,
+          //   updatedCourse.imageUrl,
+          //   updatedCourse.rating,
+          //   updatedCourse.price,
+          //   updatedCourse._id
+          // );
+          // this.courseFormGroup = this.setForm(updatedCourse);
           this.notificationService.showSuccess('Course successfully updated');
         });
     } else {

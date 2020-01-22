@@ -83,13 +83,14 @@ app.post('/uploadVideoLecture', (req, res, next) => {
 });
 
 // GraphQL
+const graphiql = environment === 'development';
 app.use(
   '/graphql',
   graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
   graphqlHttp({
     schema: graphqlSchema,
     rootValue: graphqlResolver,
-    graphiql: true,
+    graphiql: graphiql,
     customFormatErrorFn(err) {
       console.log(err)
       if (!err.originalError) {

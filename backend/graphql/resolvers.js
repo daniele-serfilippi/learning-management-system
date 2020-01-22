@@ -105,9 +105,7 @@ module.exports = {
     course.description = courseInput.description;
     course.price = courseInput.price;
     // saving lectures
-    console.log('SECTIONS: ', courseInput.sections)
     for (const section of courseInput.sections) {
-      console.log('LECTURES: ', section.lectures)
       for (const lecture of section.lectures) {
         let lectureDocument;
         if (lecture.id) {
@@ -121,12 +119,10 @@ module.exports = {
           lectureDocument = new Lecture();
         }
 
-        console.log('DOC: ', lectureDocument)
-
         const oldVideoUrl = lectureDocument.videoUrl;
-
         lectureDocument.title = lecture.title;
         lectureDocument.videoUrl = lecture.videoUrl;
+        lectureDocument.isFree = lecture.isFree;
         if (! lectureDocument.duration || oldVideoUrl !== lecture.videoUrl) {
           const duration = await getVideoDurationInSeconds(lecture.videoUrl);
           lectureDocument.duration = toHHMMSS(duration);
@@ -137,7 +133,6 @@ module.exports = {
         if (oldVideoUrl && oldVideoUrl !== lecture.videoUrl) {
           clearMedia(oldVideoUrl);
         }
-        
       }
     }
     // saving sections
