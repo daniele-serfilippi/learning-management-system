@@ -155,8 +155,9 @@ export class CourseFormComponent implements OnInit {
   onAddSection() {
     (this.courseFormGroup.get('sections') as FormArray).push(
       this.fb.group({
+        id: null,
         title: [null, Validators.required],
-        lectures: [[]]
+        lectures: this.fb.array(this.getFormGroupLectures(null))
       })
     );
   }

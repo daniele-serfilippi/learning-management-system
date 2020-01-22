@@ -19,6 +19,7 @@
             placeholder="Lecture title"
             formControlName="title"
             required
+            autofocus
           >
           <mat-error *ngIf="lectureFormGroup.get('title').hasError('required')">
             Lecture title is <strong>required</strong>
@@ -45,13 +46,14 @@
     </div>
 
     <div *ngIf="lectureFormGroup.get('title').value" class="video-container text-center ml-3">
-      <video *ngIf="videoUrl" controls preload="metadata" [src]="backendURL + videoUrl">
+      <video *ngIf="lectureFormGroup.get('videoUrl').value" controls preload="metadata" [src]="backendURL + lectureFormGroup.get('videoUrl').value">
         Your browser does not support HTML5 video.
       </video>
 
       <app-drag-drop-file-upload
-        [className]="videoUrl ? 'hidden' : ''"
+        [className]="lectureFormGroup.get('videoUrl').value ? 'hidden' : ''"
         placeholder="Drag video or click"
+        (videoSelected)="onVideoSelected($event)"
         [onChangeVideo]="changeVideoSubject.asObservable()"
       ></app-drag-drop-file-upload>
 
@@ -59,7 +61,7 @@
 
       <div>
         <button
-          *ngIf="lectureFormGroup.get('title').value && videoUrl && !progress"
+          *ngIf="lectureFormGroup.get('title').value && lectureFormGroup.get('videoUrl').value && !progress"
           class="flexAlignEnd"
           matTooltip="Change video"
           mat-icon-button

@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { VideoUploadService } from 'src/app/services/video-upload.service';
 import { CourseService } from 'src/app/services/course.service';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -11,9 +10,8 @@ import { Subject, Subscription } from 'rxjs';
   templateUrl: './course-lecture.component.html',
   styleUrls: ['./course-lecture.component.sass']
 })
-export class CourseLectureComponent implements OnInit, OnDestroy {
+export class CourseLectureComponent implements OnInit {
   changeVideoSubject: Subject<void> = new Subject<void>();
-  private uploadVideoSubscription: Subscription;
 
   @Input() lectureFormGroup: FormGroup;
   @Input() sectionFormGroup: FormGroup;
@@ -25,12 +23,10 @@ export class CourseLectureComponent implements OnInit, OnDestroy {
   lectureId: string;
   sectionId: string;
   courseId: string;
-  videoUrl = null;
 
   backendURL = environment.backendURL;
 
   constructor(
-    private videoUploadService: VideoUploadService,
     private courseService: CourseService
   ) { }
 
@@ -38,27 +34,22 @@ export class CourseLectureComponent implements OnInit, OnDestroy {
     this.lectureId = this.lectureFormGroup.get('id').value;
     this.sectionId = this.sectionFormGroup.get('id').value;
     this.courseId = this.courseFormGroup.get('id').value;
-    this.videoUrl = this.lectureFormGroup.get('videoUrl').value;
+  }
 
-    this.uploadVideoSubscription = this.videoUploadService.videoFileSubject.subscribe(videoFile => {
+  onVideoSelected(videoFile: File) {
       // Upload to server
-      this.courseService.uploadVideoLecture(videoFile, this.lectureId, this.sectionId, this.courseId)
+      this.courseService
+        .uploadVideoLecture(videoFile, this.lectureId, this.sectionId, this.courseId)
         .subscribe((event: HttpEvent<any>) => {
           switch (event.type) {
             case HttpEventType.UploadProgress:
               this.progress = Math.round(event.loaded / event.total * 100);
               break;
             case HttpEventType.Response:
-              this.videoUrl = event.body.filePath;
-              this.lectureFormGroup.get('videoUrl').setValue(this.videoUrl);
+              this.lectureFormGroup.get('videoUrl').setValue(event.body.filePath);
               this.progress = 0;
           }
-        });
       });
-  }
-
-  ngOnDestroy() {
-    this.uploadVideoSubscription.unsubscribe();
   }
 
   onChangeVideo() {

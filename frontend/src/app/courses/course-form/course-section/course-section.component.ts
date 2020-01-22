@@ -31,13 +31,20 @@ export class CourseSectionComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        const control = this.courseFormGroup.controls['sections'] as FormArray;
+        const control = this.courseFormGroup.get('sections') as FormArray;
         control.removeAt(index);
       }
     });
   }
 
   onAddLecture() {
-
+    (this.sectionFormGroup.get('lectures') as FormArray).push(
+      this.fb.group({
+        id: null,
+        title: [null, Validators.required],
+        videoUrl: null,
+        isFree: false
+      })
+    );
   }
 }

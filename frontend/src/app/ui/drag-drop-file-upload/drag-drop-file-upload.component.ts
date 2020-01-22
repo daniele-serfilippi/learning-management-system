@@ -1,7 +1,15 @@
-import { Component, OnInit, Input, HostBinding, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  HostBinding,
+  ViewChild,
+  ElementRef,
+  OnDestroy,
+  Output,
+  EventEmitter
+} from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-
-import { VideoUploadService } from 'src/app/services/video-upload.service';
 
 @Component({
   selector: 'app-drag-drop-file-upload',
@@ -12,13 +20,12 @@ export class DragDropFileUploadComponent implements OnInit, OnDestroy {
   @ViewChild('fileField') fileField: ElementRef<HTMLElement>;
   @Input() placeholder = 'Drag file or click';
   @Input() onChangeVideo: Observable<void>;
+  @Output() videoSelected = new EventEmitter<File>();
   @HostBinding('class.error') error = false;
 
   private onChangeVideoSubscription: Subscription;
 
-  constructor(
-    private videoUploadService: VideoUploadService
-  ) { }
+  constructor() { }
 
   ngOnInit() {
     this.onChangeVideoSubscription = this.onChangeVideo.subscribe(
@@ -38,7 +45,7 @@ export class DragDropFileUploadComponent implements OnInit, OnDestroy {
       return;
     }
     this.error = false;
-    this.videoUploadService.videoFileSubject.next(fileList[0]);
+    this.videoSelected.emit(fileList[0]);
   }
 
 }
