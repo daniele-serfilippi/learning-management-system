@@ -50,12 +50,12 @@
         Your browser does not support HTML5 video.
       </video>
 
-      <app-drag-drop-file-upload
+      <app-drag-drop-video-upload
         [className]="lectureFormGroup.get('videoUrl').value ? 'hidden' : ''"
         placeholder="Drag video or click"
         (videoSelected)="onVideoSelected($event)"
         [onChangeVideo]="changeVideoSubject.asObservable()"
-      ></app-drag-drop-file-upload>
+      ></app-drag-drop-video-upload>
 
       <mat-progress-bar *ngIf="progress" mode="determinate" [value]="progress"></mat-progress-bar>
 

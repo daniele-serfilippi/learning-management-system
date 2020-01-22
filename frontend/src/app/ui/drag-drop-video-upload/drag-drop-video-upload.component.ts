@@ -12,11 +12,11 @@ import {
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-drag-drop-file-upload',
-  templateUrl: './drag-drop-file-upload.component.html',
-  styleUrls: ['./drag-drop-file-upload.component.sass']
+  selector: 'app-drag-drop-video-upload',
+  templateUrl: './drag-drop-video-upload.component.html',
+  styleUrls: ['./drag-drop-video-upload.component.sass']
 })
-export class DragDropFileUploadComponent implements OnInit, OnDestroy {
+export class DragDropVideoUploadComponent implements OnInit, OnDestroy {
   @ViewChild('fileField') fileField: ElementRef<HTMLElement>;
   @Input() placeholder = 'Drag file or click';
   @Input() onChangeVideo: Observable<void>;

@@ -1,9 +1,9 @@
 import { Directive, EventEmitter, Output, HostListener, HostBinding } from '@angular/core';
 
 @Directive({
-  selector: '[appDragDropFileUpload]'
+  selector: '[appDragDropVideoUpload]'
 })
-export class DragDropFileUploadDirective {
+export class DragDropVideoUploadDirective {
 
   @Output() fileDropped = new EventEmitter<any>();
 
@@ -20,7 +20,7 @@ export class DragDropFileUploadDirective {
   @HostListener('dragleave', ['$event']) dragLeave(event) {
     event.preventDefault();
     event.stopPropagation();
-    // this.hover = false;
+    this.hover = false;
   }
 
   // Drop Event
