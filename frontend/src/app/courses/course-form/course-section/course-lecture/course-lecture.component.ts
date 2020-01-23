@@ -1,11 +1,12 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
 import { CourseService } from 'src/app/services/course.service';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/ui/confirm-dialog/confirm-dialog.component';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-course-lecture',
@@ -30,6 +31,7 @@ export class CourseLectureComponent implements OnInit {
 
   constructor(
     private courseService: CourseService,
+    private notificationService: NotificationService,
     private dialog: MatDialog,
   ) { }
 
@@ -70,8 +72,14 @@ export class CourseLectureComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        const control = this.sectionFormGroup.get('lectures') as FormArray;
-        control.removeAt(lectureIndex);
+        this.courseService
+        .deleteLecture(this.lectureId)
+        .subscribe(res => {
+          const control = this.sectionFormGroup.get('lectures') as FormArray;
+          control.removeAt(lectureIndex);
+          this.notificationService.showSuccess('Lecture successfully deleted');
+        });
+
       }
     });
   }

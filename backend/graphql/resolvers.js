@@ -147,8 +147,9 @@ module.exports = {
 
     const uploadedImage = await courseInput.image;
 
+    let oldImageUrl = null;
     if (uploadedImage) {
-      const oldImageUrl = course.imageUrl;
+      oldImageUrl = course.imageUrl;
       const { filename, mimetype, createReadStream } = uploadedImage;
       const stream = createReadStream();
       const pathObj = await storeFS({ stream, filename });
@@ -156,9 +157,9 @@ module.exports = {
       course.imageUrl = fileLocation;
     }
 
-    const updatedCourse = await course.save();
-
-    if (updatedCourse && typeof oldImageUrl !== 'undefined') {
+    await course.save();
+    const updatedCourse = await Course.findById(id).populate('sections.lectures');
+    if (oldImageUrl !== updatedCourse.imageUrl) {
       clearMedia(oldImageUrl);
     }
 
@@ -171,9 +172,48 @@ module.exports = {
   },
 
   deleteCourse: async function({ id }, req) {
-    const course = await Course.findById(id);
-    clearMedia(course.imageUrl);
+    const course = await Course.findById(id).populate('sections.lectures');
+    if (!course) {
+      const error = new Error('No course found');
+      error.code = 404;
+      throw error;
+    }
     await Course.findByIdAndRemove(id);
+    clearMedia(course.imageUrl);
+    // delete all video files of the course
+    for (const section of course.sections)
+      for (const lecture of section.lectures) {
+        clearMedia(lecture.videoUrl);
+      }
     return true;
-  }
+  },
+
+  deleteSection: async function({ id, courseId }, req) {
+    const course = await Course.findById(courseId).populate('sections.lectures');
+    if (!course) {
+      const error = new Error('No course found');
+      error.code = 404;
+      throw error;
+    }
+    const sectionIndex = course.sections.findIndex(section => section.id.toString() === id);
+    if (sectionIndex < 0) {
+      const error = new Error('No section found');
+      error.code = 404;
+      throw error;
+    }
+    const section = course.sections.splice(sectionIndex, 1);
+    await course.save();
+    // delete all video files of the section
+    for (const lecture of section.lectures) {
+      clearMedia(lecture.videoUrl);
+    }
+    return true;
+  },
+
+  deleteLecture: async function({ id }, req) {
+    const lecture = await Lecture.findById(id);
+    await Lecture.findByIdAndRemove(id);
+    clearMedia(lecture.videoUrl);
+    return true;
+  },
 };

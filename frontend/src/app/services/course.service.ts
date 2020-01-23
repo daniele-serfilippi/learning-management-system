@@ -173,6 +173,42 @@ export class CourseService {
     });
   }
 
+  deleteSection(id: string, courseId: string) {
+    const mutation = gql`
+      mutation deleteSection(
+        $id: ID!
+        $courseId: ID!
+      ) {
+          deleteSection(id: $id, courseId: $courseId)
+      }
+    `;
+
+    return this.apollo.mutate({
+      mutation,
+      variables: {
+        id,
+        courseId
+      }
+    });
+  }
+
+  deleteLecture(id: string) {
+    const mutation = gql`
+      mutation deleteLecture(
+        $id: ID!
+      ) {
+          deleteLecture(id: $id)
+      }
+    `;
+
+    return this.apollo.mutate({
+      mutation,
+      variables: {
+        id
+      }
+    });
+  }
+
   uploadVideoLecture(video: File, lectureId: string, sectionId: string, courseId: string) {
       const formData = new FormData();
       formData.append('lectureId', lectureId);

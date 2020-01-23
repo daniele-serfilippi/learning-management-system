@@ -61,6 +61,8 @@ module.exports = buildSchema(`
         createCourse(courseInput: CourseInput!): Course!
         updateCourse(id: ID!, courseInput: CourseInput!): Course!
         deleteCourse(id: ID!): Boolean
+        deleteSection(id: ID!, courseId: ID!): Boolean
+        deleteLecture(id: ID!): Boolean
     }
 
     schema {

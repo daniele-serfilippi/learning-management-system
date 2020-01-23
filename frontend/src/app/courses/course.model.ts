@@ -14,6 +14,7 @@ export class Course {
     imageUrl: string,
     rating: number,
     price: number,
+    sections: [],
     id?: string
   ) {
     this.id = id;

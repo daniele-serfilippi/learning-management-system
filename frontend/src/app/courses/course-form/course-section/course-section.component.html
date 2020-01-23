@@ -35,7 +35,7 @@
     </button>
 
     <button
-      *ngIf="courseFormGroup.get('sections')['controls'].length > 1"
+      *ngIf="courseFormGroup.get('sections')['controls'].length > 1 && courseFormGroup.valid"
       mat-button
       color="warn"
       type="button"

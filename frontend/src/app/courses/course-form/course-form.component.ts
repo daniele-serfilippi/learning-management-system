@@ -128,8 +128,8 @@ export class CourseFormComponent implements OnInit {
       this.courseService
         .updateCourse(this.course.id, formValue)
         .subscribe(( { data }: any) => {
-          // const updatedCourse = data.updateCourse;
-          // console.log(updatedCourse)
+          const updatedCourse = data.updateCourse;
+          console.log(updatedCourse)
           // this.course = new Course(
           //   updatedCourse.title,
           //   updatedCourse.subtitle,
@@ -139,7 +139,7 @@ export class CourseFormComponent implements OnInit {
           //   updatedCourse.price,
           //   updatedCourse._id
           // );
-          // this.courseFormGroup = this.setForm(updatedCourse);
+          this.courseFormGroup = this.setForm(updatedCourse);
           this.notificationService.showSuccess('Course successfully updated');
         });
     } else {
