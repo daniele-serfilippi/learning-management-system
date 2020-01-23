@@ -102,7 +102,7 @@
       <mat-accordion formArrayName="sections" multi="true">
         <mat-expansion-panel
           *ngFor="let section of courseFormGroup.get('sections')['controls']; let i = index;"
-          [expanded]="i === 0 || ! section.title"
+          [expanded]="i === 0"
         >
           <mat-expansion-panel-header>
             <mat-panel-title>
