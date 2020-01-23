@@ -7,70 +7,77 @@
   <input
     type="hidden"
     formControlName="videoUrl"
+    required
   />
 
-  <div class="lecture-container d-flex flex-row mb-4 p-3 rounded">
+  <mat-card class="lecture-container mb-4">
+    <mat-card-content>
+      <div class="d-flex flex-row p-1">
+        <div class="d-flex flex-column flex-grow-1">
+          <div>
+            <mat-form-field>
+              <input
+                matInput
+                placeholder="Lecture title"
+                formControlName="title"
+                required
+                autofocus
+              >
+              <mat-error *ngIf="lectureFormGroup.get('title').hasError('required')">
+                Lecture title is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
 
-    <div class="d-flex flex-column flex-grow-1">
-      <div>
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Lecture title"
-            formControlName="title"
-            required
-            autofocus
+            <mat-slide-toggle color="primary" formControlName="isFree">
+              Free
+            </mat-slide-toggle>
+          </div>
+        </div>
+
+        <div *ngIf="lectureFormGroup.get('title').value" class="video-container text-center ml-3">
+          <video
+            *ngIf="lectureFormGroup.get('videoUrl').value"
+            controls
+            preload="metadata"
+            [src]="backendURL + lectureFormGroup.get('videoUrl').value"
           >
-          <mat-error *ngIf="lectureFormGroup.get('title').hasError('required')">
-            Lecture title is <strong>required</strong>
-          </mat-error>
-        </mat-form-field>
+            Your browser does not support HTML5 video.
+          </video>
 
+          <app-drag-drop-video-upload
+            [className]="lectureFormGroup.get('videoUrl').value ? 'hidden' : ''"
+            placeholder="Drag video or click"
+            (videoSelected)="onVideoSelected($event)"
+            [onChangeVideo]="changeVideoSubject.asObservable()"
+          ></app-drag-drop-video-upload>
 
-        <mat-slide-toggle color="primary" formControlName="isFree">
-          Free
-        </mat-slide-toggle>
+          <mat-progress-bar *ngIf="progress" mode="determinate" [value]="progress"></mat-progress-bar>
 
+          <div>
+            <button
+              *ngIf="lectureFormGroup.get('title').value && lectureFormGroup.get('videoUrl').value && !progress"
+              class="flexAlignEnd"
+              matTooltip="Change video"
+              mat-icon-button
+              color="primary"
+              type="button"
+              (click)="onChangeVideo()"
+            ><mat-icon>cloud_upload</mat-icon></button>
+          </div>
+        </div>
       </div>
-
-      <div class="d-flex">
+    </mat-card-content>
+    <mat-card-actions>
+      <div class="text-right">
         <button
-          *ngIf=""
+          *ngIf="sectionFormGroup.get('lectures')['controls'].length > 1"
           matTooltip="Remove lecture"
           mat-icon-button
           color="warn"
           type="button"
-          (click)="'onRemoveLecture(lectureIndex)'"
+          (click)="onRemoveLecture(lectureIndex)"
         ><mat-icon>delete_outline</mat-icon></button>
       </div>
-    </div>
-
-    <div *ngIf="lectureFormGroup.get('title').value" class="video-container text-center ml-3">
-      <video *ngIf="lectureFormGroup.get('videoUrl').value" controls preload="metadata" [src]="backendURL + lectureFormGroup.get('videoUrl').value">
-        Your browser does not support HTML5 video.
-      </video>
-
-      <app-drag-drop-video-upload
-        [className]="lectureFormGroup.get('videoUrl').value ? 'hidden' : ''"
-        placeholder="Drag video or click"
-        (videoSelected)="onVideoSelected($event)"
-        [onChangeVideo]="changeVideoSubject.asObservable()"
-      ></app-drag-drop-video-upload>
-
-      <mat-progress-bar *ngIf="progress" mode="determinate" [value]="progress"></mat-progress-bar>
-
-      <div>
-        <button
-          *ngIf="lectureFormGroup.get('title').value && lectureFormGroup.get('videoUrl').value && !progress"
-          class="flexAlignEnd"
-          matTooltip="Change video"
-          mat-icon-button
-          color="primary"
-          type="button"
-          (click)="onChangeVideo()"
-        ><mat-icon>cloud_upload</mat-icon></button>
-      </div>
-    </div>
-
-  </div>
+    </mat-card-actions>
+  </mat-card>
 </div>

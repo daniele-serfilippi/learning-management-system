@@ -1,9 +1,11 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormArray } from '@angular/forms';
 import { CourseService } from 'src/app/services/course.service';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Subject, Subscription } from 'rxjs';
+import { MatDialog } from '@angular/material';
+import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/ui/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-course-lecture',
@@ -27,7 +29,8 @@ export class CourseLectureComponent implements OnInit {
   backendURL = environment.backendURL;
 
   constructor(
-    private courseService: CourseService
+    private courseService: CourseService,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -54,6 +57,23 @@ export class CourseLectureComponent implements OnInit {
 
   onChangeVideo() {
     this.changeVideoSubject.next();
+  }
+
+  onRemoveLecture(lectureIndex: number) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: new ConfirmDialogModel(
+        'Confirm deletion',
+        'Are you sure you want to delete the lecture?'
+      ),
+      maxWidth: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        const control = this.sectionFormGroup.get('lectures') as FormArray;
+        control.removeAt(lectureIndex);
+      }
+    });
   }
 
 }
