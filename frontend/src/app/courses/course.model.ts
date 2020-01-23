@@ -6,6 +6,7 @@ export class Course {
   public imageUrl: string;
   public rating: number;
   public price: number;
+  public sections: [];
 
   constructor(
     title: string,
@@ -24,5 +25,6 @@ export class Course {
     this.imageUrl = imageUrl;
     this.rating = rating;
     this.price = price;
+    this.sections = sections;
   }
 }

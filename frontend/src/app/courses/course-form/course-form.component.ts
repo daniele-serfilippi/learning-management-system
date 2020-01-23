@@ -129,16 +129,16 @@ export class CourseFormComponent implements OnInit {
         .updateCourse(this.course.id, formValue)
         .subscribe(( { data }: any) => {
           const updatedCourse = data.updateCourse;
-          console.log(updatedCourse)
-          // this.course = new Course(
-          //   updatedCourse.title,
-          //   updatedCourse.subtitle,
-          //   updatedCourse.description,
-          //   updatedCourse.imageUrl,
-          //   updatedCourse.rating,
-          //   updatedCourse.price,
-          //   updatedCourse._id
-          // );
+          this.course = new Course(
+            updatedCourse.title,
+            updatedCourse.subtitle,
+            updatedCourse.description,
+            updatedCourse.imageUrl,
+            updatedCourse.rating,
+            updatedCourse.price,
+            updatedCourse.setions,
+            updatedCourse._id
+          );
           this.courseFormGroup = this.setForm(updatedCourse);
           this.notificationService.showSuccess('Course successfully updated');
         });

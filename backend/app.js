@@ -68,19 +68,21 @@ const videoFilter = (req, file, cb) => {
     cb(null, false);
   }
 };
-app.use(multer({ storage: videoStorage, fileFilter: videoFilter }).single('video'));
 
-app.post('/uploadVideoLecture', (req, res, next) => {
-  if (!req.file) {
-    return res.status(200).json({ message: 'No video provided' });
+app.post('/uploadVideoLecture', 
+  multer({ storage: videoStorage, fileFilter: videoFilter }).single('video'),
+  (req, res, next) => {
+    if (!req.file) {
+      return res.status(200).json({ message: 'No video provided' });
+    }
+    if (req.body.oldPath) {
+      clearMedia(req.body.oldPath);
+    }
+    return res
+      .status(201)
+      .json({ message: 'Video successfully uploaded', filePath: req.file.path });
   }
-  if (req.body.oldPath) {
-    clearMedia(req.body.oldPath);
-  }
-  return res
-    .status(201)
-    .json({ message: 'Video successfully uploaded', filePath: req.file.path });
-});
+);
 
 // GraphQL
 const graphiql = environment === 'development';

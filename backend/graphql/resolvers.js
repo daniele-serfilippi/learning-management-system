@@ -4,7 +4,6 @@ const { GraphQLUpload } = require("graphql-upload");
 const { getVideoDurationInSeconds } = require('get-video-duration');
 
 const { clearMedia } = require("../utils/file");
-const { toHHMMSS } = require("../utils/datetime");
 
 const Course = require("../models/course");
 const Lecture = require("../models/lecture");
@@ -73,7 +72,8 @@ module.exports = {
 
     const course = new Course({
       ...courseInput,
-      imageUrl: fileLocation
+      imageUrl: fileLocation,
+      sections: await this.saveSectionsData(courseInput.sections)
     });
 
     const createdCourse = await course.save();
@@ -83,6 +83,56 @@ module.exports = {
       createdAt: createdCourse.createdAt.toISOString(),
       updatedAt: createdCourse.updatedAt.toISOString()
     };
+  },
+
+  saveSectionsData: async function(sections) {
+    // saving lectures
+    for (const section of sections) {
+      for (const lecture of section.lectures) {
+        const savedLecture = await this.saveLecture(lecture);
+        lecture.id = savedLecture.id;
+      }
+    }
+    // saving sections
+    const mappedSections = sections.map(section => {
+      return {
+        ...section,
+        lectures: section.lectures.map(lecture => {
+          return lecture.id ? lecture.id : null // save lecture ids only
+        })
+      }
+    });
+
+    return mappedSections;
+  },
+
+  saveLecture: async function(lecture) {
+    let lectureDocument;
+    if (lecture.id) {
+      lectureDocument = await Lecture.findById(lecture.id);
+      if (!lectureDocument) {
+        const error = new Error('No lecture found with ID ' + lecture.id);
+        error.code = 404;
+        throw error;
+      }
+    } else {
+      lectureDocument = new Lecture();
+    }
+
+    const oldVideoUrl = lectureDocument.videoUrl;
+    lectureDocument.title = lecture.title;
+    lectureDocument.videoUrl = lecture.videoUrl;
+    lectureDocument.isFree = lecture.isFree;
+    if (! lectureDocument.duration || oldVideoUrl !== lecture.videoUrl) {
+      lectureDocument.duration = await getVideoDurationInSeconds(lecture.videoUrl);
+    }
+    const savedLecture = await lectureDocument.save();
+
+    if (oldVideoUrl && oldVideoUrl !== lecture.videoUrl) {
+      clearMedia(oldVideoUrl);
+    }
+
+    return savedLecture;
   },
 
   course: async function({ id }, req) {
@@ -104,49 +154,9 @@ module.exports = {
     course.subtitle = courseInput.subtitle;
     course.description = courseInput.description;
     course.price = courseInput.price;
-    // saving lectures
-    for (const section of courseInput.sections) {
-      for (const lecture of section.lectures) {
-        let lectureDocument;
-        if (lecture.id) {
-          lectureDocument = await Lecture.findById(lecture.id);
-          if (!lectureDocument) {
-            const error = new Error('No lecture found with ID ' + lecture.id);
-            error.code = 404;
-            throw error;
-          }
-        } else {
-          lectureDocument = new Lecture();
-        }
-
-        const oldVideoUrl = lectureDocument.videoUrl;
-        lectureDocument.title = lecture.title;
-        lectureDocument.videoUrl = lecture.videoUrl;
-        lectureDocument.isFree = lecture.isFree;
-        if (! lectureDocument.duration || oldVideoUrl !== lecture.videoUrl) {
-          const duration = await getVideoDurationInSeconds(lecture.videoUrl);
-          lectureDocument.duration = toHHMMSS(duration);
-        }
-        const savedLecture = await lectureDocument.save();
-        lecture.id = savedLecture.id;
-
-        if (oldVideoUrl && oldVideoUrl !== lecture.videoUrl) {
-          clearMedia(oldVideoUrl);
-        }
-      }
-    }
-    // saving sections
-    course.sections = courseInput.sections.map(section => {
-      return {
-        ...section,
-        lectures: section.lectures.map(lecture => {
-          return lecture.id ? lecture.id : null // save lecture ids only
-        })
-      }
-    });
+    course.sections = await this.saveSectionsData(courseInput.sections);
 
     const uploadedImage = await courseInput.image;
-
     let oldImageUrl = null;
     if (uploadedImage) {
       oldImageUrl = course.imageUrl;
