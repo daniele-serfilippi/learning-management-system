@@ -6,7 +6,7 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
-import { Course } from 'src/app/courses/course.model';
+import { Course } from 'src/app/shared/models/course.model';
 
 @Injectable({
   providedIn: 'root'
