@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
-import { Router, ActivatedRoute} from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import _ from 'lodash';
 
 import { NotificationService } from 'src/app/services/notification.service';
 import { CourseService } from 'src/app/services/course.service';
 import { environment } from 'src/environments/environment';
 import { Course } from '../course.model';
+import { MatDialog } from '@angular/material';
+import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/ui/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-course-form',
@@ -24,12 +25,12 @@ export class CourseFormComponent implements OnInit {
   private originalFormValue: any;
 
   constructor(
-    private http: HttpClient,
     private fb: FormBuilder,
     private router: Router,
     private notificationService: NotificationService,
     private courseService: CourseService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) { }
 
   getFormGroupLectures(lectures: any): FormGroup[] {
@@ -99,12 +100,10 @@ export class CourseFormComponent implements OnInit {
     });
 
     this.originalFormValue = formGroup.value;
+    this.formValueHasChanged = false;
 
     formGroup.valueChanges.subscribe(
-      changedFormValue => {
-        console.log(this.originalFormValue, changedFormValue, _.isEqual(this.originalFormValue, changedFormValue))
-        this.formValueHasChanged = !_.isEqual(this.originalFormValue, changedFormValue);
-      }
+      changedFormValue => this.formValueHasChanged = !_.isEqual(this.originalFormValue, changedFormValue)
     );
 
     return formGroup;
@@ -117,7 +116,7 @@ export class CourseFormComponent implements OnInit {
       const id = this.route.snapshot.params.id;
       this.courseService
         .getCourse(id)
-        .subscribe( ({ data }: any) => {
+        .subscribe(({ data }: any) => {
           this.editMode = true;
           const course = data.course;
           this.course = new Course(
@@ -135,14 +134,14 @@ export class CourseFormComponent implements OnInit {
   }
 
   onSubmit() {
-    const formValue = {...this.courseFormGroup.value};
+    const formValue = { ...this.courseFormGroup.value };
     if (formValue.image && formValue.image.files) {
       formValue.image = formValue.image.files[0];
     }
     if (this.editMode) {
       this.courseService
         .updateCourse(this.course.id, formValue)
-        .subscribe(( { data }: any) => {
+        .subscribe(({ data }: any) => {
           const updatedCourse = data.updateCourse;
           this.course = new Course(
             updatedCourse.title,
@@ -179,5 +178,25 @@ export class CourseFormComponent implements OnInit {
 
   onChangeImage() {
     this.showImageInput = true;
+  }
+
+  onBack() {
+    if (!this.formValueHasChanged) {
+      this.router.navigate(['/courses']);
+    } else {
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        data: new ConfirmDialogModel(
+          'Confirm action',
+          'The course contains unsaved changes. Are you sure you want to go back?'
+        ),
+        maxWidth: '400px'
+      });
+
+      dialogRef.afterClosed().subscribe(res => {
+        if (res) {
+          this.router.navigate(['/courses']);
+        }
+      });
+    }
   }
 }

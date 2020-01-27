@@ -128,8 +128,14 @@
     </div>
   </div>
 
-  <app-bottom-toolbar [ngClass]="'d-flex'">
-    <div class="container d-flex justify-content-end">
+  <app-bottom-toolbar [class]="'d-flex'">
+    <div class="container d-flex justify-content-between">
+      <button
+        mat-raised-button
+        type="button"
+        (click)="onBack()"
+      >BACK</button>
+
       <button
         mat-raised-button
         type="submit"
