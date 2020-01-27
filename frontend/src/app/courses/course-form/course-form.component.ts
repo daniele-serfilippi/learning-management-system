@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { Router, ActivatedRoute} from '@angular/router';
+import _ from 'lodash';
 
 import { NotificationService } from 'src/app/services/notification.service';
 import { CourseService } from 'src/app/services/course.service';
@@ -19,6 +20,8 @@ export class CourseFormComponent implements OnInit {
   backendUrl: string = environment.backendURL;
   editMode = false;
   showImageInput = false;
+  formValueHasChanged = false;
+  private originalFormValue: any;
 
   constructor(
     private http: HttpClient,
@@ -84,7 +87,8 @@ export class CourseFormComponent implements OnInit {
     if (!course) {
       course = {};
     }
-    return this.fb.group({
+
+    const formGroup = this.fb.group({
       id: course._id,
       title: [course.title, Validators.required],
       subtitle: [course.subtitle, Validators.required],
@@ -93,6 +97,17 @@ export class CourseFormComponent implements OnInit {
       price: [course.price, Validators.required],
       sections: this.fb.array(this.getFormGroupSections(course.sections))
     });
+
+    this.originalFormValue = formGroup.value;
+
+    formGroup.valueChanges.subscribe(
+      changedFormValue => {
+        console.log(this.originalFormValue, changedFormValue, _.isEqual(this.originalFormValue, changedFormValue))
+        this.formValueHasChanged = !_.isEqual(this.originalFormValue, changedFormValue);
+      }
+    );
+
+    return formGroup;
   }
 
   ngOnInit() {

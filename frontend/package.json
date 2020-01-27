@@ -31,6 +31,7 @@
     "graphql": "^14.5.0",
     "graphql-tag": "^2.10.0",
     "hammerjs": "^2.0.8",
+    "lodash": "^4.17.15",
     "ngx-material-file-input": "^2.0.0",
     "quill": "^1.3.7",
     "rxjs": "~6.5.4",

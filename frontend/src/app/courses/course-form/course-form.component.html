@@ -11,89 +11,80 @@
   />
   <div class="row">
     <div class="col-md-5">
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Title"
-            formControlName="title"
-            required
-          >
-          <mat-error *ngIf="courseFormGroup.get('title').hasError('required')">
-            Title is <strong>required</strong>
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Subitle"
-            formControlName="subtitle"
-            required
-          >
-          <mat-error *ngIf="courseFormGroup.get('subtitle').hasError('required')">
-            Subitle is <strong>required</strong>
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field class="quill">
-          <quill-material
-            formControlName="description"
-            placeholder="Description"
-            required
-          ></quill-material>
-          <mat-error *ngIf="courseFormGroup.get('description').hasError('required')">
-            Description is <strong>required</strong>
-          </mat-error>
-        </mat-form-field>
-
-        <div
-          *ngIf="course && course.imageUrl"
-          class="preview_image_container d-flex justify-content-between align-items-center"
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="Title"
+          formControlName="title"
+          required
         >
-          <div>
-            <img src="{{backendUrl + course.imageUrl}}" class="w-100">
-          </div>
-          <div class="ml-3">
-            <button type="button" mat-stroked-button color="primary" (click)="onChangeImage()">Change image</button>
-          </div>
+        <mat-error *ngIf="courseFormGroup.get('title').hasError('required')">
+          Title is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="Subitle"
+          formControlName="subtitle"
+          required
+        >
+        <mat-error *ngIf="courseFormGroup.get('subtitle').hasError('required')">
+          Subitle is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="quill">
+        <quill-material
+          formControlName="description"
+          placeholder="Description"
+          required
+        ></quill-material>
+        <mat-error *ngIf="courseFormGroup.get('description').hasError('required')">
+          Description is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <div
+        *ngIf="course && course.imageUrl"
+        class="preview_image_container d-flex justify-content-between align-items-center"
+      >
+        <div>
+          <img src="{{backendUrl + course.imageUrl}}" class="w-100">
         </div>
+        <div class="ml-3">
+          <button type="button" mat-stroked-button color="primary" (click)="onChangeImage()">Change image</button>
+        </div>
+      </div>
 
-        <mat-form-field *ngIf="!editMode || (editMode && showImageInput)">
-          <ngx-mat-file-input
-            #imageInput
-            formControlName="image"
-            placeholder="Preview image"
-            valuePlaceholder="No image selected"
-            [accept]="'.png,.jpg,.jpeg'"
-            [attr.required]="!editMode"
-          ></ngx-mat-file-input>
-          <mat-icon matSuffix>image</mat-icon>
-          <button mat-icon-button matSuffix *ngIf="!imageInput.empty" (click)="imageInput.clear($event)">
-            <mat-icon>clear</mat-icon>
-          </button>
-          <mat-error *ngIf="courseFormGroup.get('image').hasError('required')">
-            Image is <strong>required</strong>
-          </mat-error>
-        </mat-form-field>
+      <mat-form-field *ngIf="!editMode || (editMode && showImageInput)">
+        <ngx-mat-file-input
+          #imageInput
+          formControlName="image"
+          placeholder="Preview image"
+          valuePlaceholder="No image selected"
+          [accept]="'.png,.jpg,.jpeg'"
+          [attr.required]="!editMode"
+        ></ngx-mat-file-input>
+        <mat-icon matSuffix>image</mat-icon>
+        <button mat-icon-button matSuffix *ngIf="!imageInput.empty" (click)="imageInput.clear($event)">
+          <mat-icon>clear</mat-icon>
+        </button>
+        <mat-error *ngIf="courseFormGroup.get('image').hasError('required')">
+          Image is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
 
-        <mat-form-field>
-          <input
-            matInput
-            type="number"
-            placeholder="Price"
-            formControlName="price"
-            required
-          >
-        </mat-form-field>
-
-        <mat-card-actions>
-          <button
-            mat-raised-button
-            color="primary"
-            type="submit"
-            [disabled]="courseFormGroup.invalid"
-          >Submit</button>
-        </mat-card-actions>
+      <mat-form-field>
+        <input
+          matInput
+          type="number"
+          placeholder="Price"
+          formControlName="price"
+          required
+        >
+      </mat-form-field>
     </div>
 
     <div class="col-md-7">
@@ -136,4 +127,14 @@
 
     </div>
   </div>
+
+  <app-bottom-toolbar [ngClass]="'d-flex'">
+    <div class="container d-flex justify-content-end">
+      <button
+        mat-raised-button
+        type="submit"
+        [disabled]="courseFormGroup.invalid || !formValueHasChanged"
+      >SUBMIT</button>
+    </div>
+  </app-bottom-toolbar>
 </form>

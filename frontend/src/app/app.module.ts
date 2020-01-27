@@ -4,9 +4,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import { MaterialModule } from './ui/material.module';
-import { GraphQLModule } from './graphql.module';
-import { AppRoutingModule } from './app-routing.module';
+import { MaterialModule } from './modules/material.module';
+import { GraphQLModule } from './modules/graphql.module';
+import { AppRoutingModule } from './modules/app-routing.module';
 
 import { GlobalErrorHandler } from './errorHandlers/global-error-handler';
 import { ServerErrorInterceptor } from './errorHandlers/server-error.interceptor';
@@ -21,6 +21,7 @@ import { CourseLectureComponent } from './courses/course-form/course-section/cou
 import { DragDropVideoUploadComponent } from './ui/drag-drop-video-upload/drag-drop-video-upload.component';
 import { DragDropVideoUploadDirective } from './ui/drag-drop-video-upload/drag-drop-video-upload.directive';
 import { QuillMaterialComponent } from './ui/quill-material/quill-material.component';
+import { BottomToolbarComponent } from './ui/bottom-toolbar/bottom-toolbar.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { QuillMaterialComponent } from './ui/quill-material/quill-material.compo
     CourseLectureComponent,
     DragDropVideoUploadComponent,
     DragDropVideoUploadDirective,
-    QuillMaterialComponent
+    QuillMaterialComponent,
+    BottomToolbarComponent
   ],
   imports: [
     BrowserModule,
