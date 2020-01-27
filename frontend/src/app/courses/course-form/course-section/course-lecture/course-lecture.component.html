@@ -21,7 +21,6 @@
                 placeholder="Lecture title"
                 formControlName="title"
                 required
-                autofocus
               >
               <mat-error *ngIf="lectureFormGroup.get('title').hasError('required')">
                 Lecture title is <strong>required</strong>

@@ -18,7 +18,7 @@
             formControlName="title"
             required
           >
-          <mat-error *ngIf="courseFormGroup.controls['title'].hasError('required')">
+          <mat-error *ngIf="courseFormGroup.get('title').hasError('required')">
             Title is <strong>required</strong>
           </mat-error>
         </mat-form-field>
@@ -30,19 +30,18 @@
             formControlName="subtitle"
             required
           >
-          <mat-error *ngIf="courseFormGroup.controls['subtitle'].hasError('required')">
+          <mat-error *ngIf="courseFormGroup.get('subtitle').hasError('required')">
             Subitle is <strong>required</strong>
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field>
-          <textarea
-            matInput
-            placeholder="Description"
+        <mat-form-field class="quill">
+          <quill-material
             formControlName="description"
+            placeholder="Description"
             required
-          ></textarea>
-          <mat-error *ngIf="courseFormGroup.controls['description'].hasError('required')">
+          ></quill-material>
+          <mat-error *ngIf="courseFormGroup.get('description').hasError('required')">
             Description is <strong>required</strong>
           </mat-error>
         </mat-form-field>
@@ -72,7 +71,7 @@
           <button mat-icon-button matSuffix *ngIf="!imageInput.empty" (click)="imageInput.clear($event)">
             <mat-icon>clear</mat-icon>
           </button>
-          <mat-error *ngIf="courseFormGroup.controls['image'].hasError('required')">
+          <mat-error *ngIf="courseFormGroup.get('image').hasError('required')">
             Image is <strong>required</strong>
           </mat-error>
         </mat-form-field>

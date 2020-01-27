@@ -20,6 +20,7 @@ import { CourseSectionComponent } from './courses/course-form/course-section/cou
 import { CourseLectureComponent } from './courses/course-form/course-section/course-lecture/course-lecture.component';
 import { DragDropVideoUploadComponent } from './ui/drag-drop-video-upload/drag-drop-video-upload.component';
 import { DragDropVideoUploadDirective } from './ui/drag-drop-video-upload/drag-drop-video-upload.directive';
+import { QuillMaterialComponent } from './ui/quill-material/quill-material.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { DragDropVideoUploadDirective } from './ui/drag-drop-video-upload/drag-d
     CourseLectureComponent,
     DragDropVideoUploadComponent,
     DragDropVideoUploadDirective,
+    QuillMaterialComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +43,7 @@ import { DragDropVideoUploadDirective } from './ui/drag-drop-video-upload/drag-d
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    GraphQLModule,
+    GraphQLModule
   ],
   providers: [
     { provide: ErrorHandler, useClass: GlobalErrorHandler },

@@ -14,10 +14,10 @@ import { Course } from '../course.model';
   styleUrls: ['./course-form.component.sass']
 })
 export class CourseFormComponent implements OnInit {
-  editMode: boolean;
   course: Course;
   courseFormGroup: FormGroup;
   backendUrl: string = environment.backendURL;
+  editMode = false;
   showImageInput = false;
 
   constructor(
@@ -89,7 +89,7 @@ export class CourseFormComponent implements OnInit {
       title: [course.title, Validators.required],
       subtitle: [course.subtitle, Validators.required],
       description: [course.description, Validators.required],
-      image: null,
+      image: [null, this.editMode ? null : Validators.required],
       price: [course.price, Validators.required],
       sections: this.fb.array(this.getFormGroupSections(course.sections))
     });
