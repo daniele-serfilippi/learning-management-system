@@ -11,13 +11,22 @@
     </mat-error>
   </mat-form-field>
 
-  <app-course-lecture
-    *ngFor="let lecture of sectionFormGroup.get('lectures')['controls']; let i = index;"
-    [lectureFormGroup]="lecture"
-    [sectionFormGroup]="sectionFormGroup"
-    [courseFormGroup]="courseFormGroup"
-    [lectureIndex]="i"
-  ></app-course-lecture>
+  <div cdkDropList (cdkDropListDropped)="drop($event)">
+    <div
+      *ngFor="let lecture of sectionFormGroup.get('lectures')['controls']; let i = index;"
+      cdkDrag
+      [cdkDragDisabled]="sectionFormGroup.get('lectures')['controls'].length === 1"
+    >
+      <div class="lecture-drag-placeholder mb-4" *cdkDragPlaceholder></div>
+      <app-course-lecture
+        [lectureFormGroup]="lecture"
+        [sectionFormGroup]="sectionFormGroup"
+        [courseFormGroup]="courseFormGroup"
+        [lectureIndex]="i"
+      >
+      </app-course-lecture>
+    </div>
+  </div>
 
   <mat-divider class="mt-3 mb-3"></mat-divider>
 

@@ -103,7 +103,7 @@ export class CourseFormComponent implements OnInit {
     this.formValueHasChanged = false;
 
     formGroup.valueChanges.subscribe(
-      changedFormValue => this.formValueHasChanged = !_.isEqual(this.originalFormValue, changedFormValue)
+      changedFormValue => { this.formValueHasChanged = !_.isEqual(this.originalFormValue, changedFormValue) }
     );
 
     return formGroup;

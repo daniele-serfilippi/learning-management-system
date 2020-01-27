@@ -1,7 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/ui/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+
 import { CourseService } from 'src/app/services/course.service';
 import { NotificationService } from 'src/app/services/notification.service';
 
@@ -42,12 +44,12 @@ export class CourseSectionComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.courseService
-        .deleteSection(this.sectionId, this.courseId)
-        .subscribe(res => {
-          const control = this.courseFormGroup.get('sections') as FormArray;
-          control.removeAt(index);
-          this.notificationService.showSuccess('Lecture successfully deleted');
-        });
+          .deleteSection(this.sectionId, this.courseId)
+          .subscribe(res => {
+            const control = this.courseFormGroup.get('sections') as FormArray;
+            control.removeAt(index);
+            this.notificationService.showSuccess('Lecture successfully deleted');
+          });
       }
     });
   }
@@ -61,5 +63,11 @@ export class CourseSectionComponent implements OnInit {
         isFree: false
       })
     );
+  }
+
+  drop(event: CdkDragDrop<FormGroup[]>) {
+    moveItemInArray(this.sectionFormGroup.get('lectures')['controls'], event.previousIndex, event.currentIndex);
+    moveItemInArray(this.sectionFormGroup.controls.lectures.value, event.previousIndex, event.currentIndex);
+    this.courseFormGroup.updateValueAndValidity();
   }
 }
