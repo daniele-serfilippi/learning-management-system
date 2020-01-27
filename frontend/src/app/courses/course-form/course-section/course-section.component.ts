@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/shared/ui/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material';
@@ -6,18 +6,22 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { CourseService } from 'src/app/shared/services/course.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
+import { Section } from 'src/app/shared/models/section.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-course-section',
   templateUrl: './course-section.component.html',
   styleUrls: ['./course-section.component.sass']
 })
-export class CourseSectionComponent implements OnInit {
+export class CourseSectionComponent implements OnInit, OnDestroy {
   @Input() sectionFormGroup: FormGroup;
   @Input() courseFormGroup: FormGroup;
   @Input() sectionIndex: number;
 
-  private sectionId: string;
+  formChangesSubscription: Subscription;
+
+  private section: Section;
   private courseId: string;
 
   constructor(
@@ -28,8 +32,18 @@ export class CourseSectionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.sectionId = this.sectionFormGroup.get('id').value;
+    this.section = new Section().deserialize(this.sectionFormGroup.value);
     this.courseId = this.courseFormGroup.get('id').value;
+    this.formChangesSubscription = this.subcribeToFormChanges();
+  }
+
+  ngOnDestroy(): void {
+    this.formChangesSubscription.unsubscribe();
+  }
+
+  subcribeToFormChanges() {
+    const formValueChanges$ = this.sectionFormGroup.valueChanges;
+    return formValueChanges$.subscribe(formValue => { this.section = new Section().deserialize(formValue); });
   }
 
   onRemoveSection(index: number) {
@@ -44,7 +58,7 @@ export class CourseSectionComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.courseService
-          .deleteSection(this.sectionId, this.courseId)
+          .deleteSection(this.section.id, this.courseId)
           .subscribe(res => {
             const control = this.courseFormGroup.get('sections') as FormArray;
             control.removeAt(index);
@@ -59,7 +73,9 @@ export class CourseSectionComponent implements OnInit {
       this.fb.group({
         id: null,
         title: [null, Validators.required],
+        type: ['video', Validators.required],
         videoUrl: null,
+        text: null,
         isFree: false
       })
     );

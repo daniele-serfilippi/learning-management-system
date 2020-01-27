@@ -1,21 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import _ from 'lodash';
-
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { CourseService } from 'src/app/shared/services/course.service';
 import { environment } from 'src/environments/environment';
-import { Course } from '../course.model';
+import { Course } from 'src/app/shared/models/course.model';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/shared/ui/confirm-dialog/confirm-dialog.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-course-form',
   templateUrl: './course-form.component.html',
   styleUrls: ['./course-form.component.sass']
 })
-export class CourseFormComponent implements OnInit {
+export class CourseFormComponent implements OnInit, OnDestroy {
+  formChangesSubscription: Subscription;
   course: Course;
   courseFormGroup: FormGroup;
   backendUrl: string = environment.backendURL;
@@ -115,6 +116,7 @@ export class CourseFormComponent implements OnInit {
 
   ngOnInit() {
     this.courseFormGroup = this.setForm();
+    this.formChangesSubscription = this.subcribeToFormChanges();
 
     if (this.route.snapshot.params.id) { // editing mode
       const id = this.route.snapshot.params.id;
@@ -123,18 +125,19 @@ export class CourseFormComponent implements OnInit {
         .subscribe(({ data }: any) => {
           this.editMode = true;
           const course = data.course;
-          this.course = new Course(
-            course.title,
-            course.subtitle,
-            course.description,
-            course.imageUrl,
-            course.rating,
-            course.price,
-            course._id
-          );
+          this.course = new Course().deserialize(course);
           this.courseFormGroup = this.setForm(course);
         });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.formChangesSubscription.unsubscribe();
+  }
+
+  subcribeToFormChanges() {
+    const formValueChanges$ = this.courseFormGroup.valueChanges;
+    return formValueChanges$.subscribe(formValue => { this.course = new Course().deserialize(formValue); });
   }
 
   onSubmit() {
@@ -147,16 +150,7 @@ export class CourseFormComponent implements OnInit {
         .updateCourse(this.course.id, formValue)
         .subscribe(({ data }: any) => {
           const updatedCourse = data.updateCourse;
-          this.course = new Course(
-            updatedCourse.title,
-            updatedCourse.subtitle,
-            updatedCourse.description,
-            updatedCourse.imageUrl,
-            updatedCourse.rating,
-            updatedCourse.price,
-            updatedCourse.setions,
-            updatedCourse._id
-          );
+          this.course = new Course().deserialize(updatedCourse);
           this.courseFormGroup = this.setForm(updatedCourse);
           this.notificationService.showSuccess('Course successfully updated');
         });

@@ -12,7 +12,6 @@ import { Course } from 'src/app/shared/models/course.model';
   providedIn: 'root'
 })
 export class CourseService {
-  private courses: Course[] = [];
 
   constructor(
     private apollo: Apollo,

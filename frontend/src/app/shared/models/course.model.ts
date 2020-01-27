@@ -1,4 +1,7 @@
-export class Course {
+import { Deserializable } from './deserializable.model';
+import { Section } from './section.model';
+
+export class Course implements Deserializable {
   id: string;
   title: string;
   subtitle: string;
@@ -6,25 +9,12 @@ export class Course {
   imageUrl: string;
   rating: number;
   price: number;
-  sections: [];
+  sections: Section[];
 
-  constructor(
-    title: string,
-    subtitle: string,
-    description: string,
-    imageUrl: string,
-    rating: number,
-    price: number,
-    sections: [],
-    id?: string
-  ) {
-    this.id = id;
-    this.title = title;
-    this.subtitle = subtitle;
-    this.description = description;
-    this.imageUrl = imageUrl;
-    this.rating = rating;
-    this.price = price;
-    this.sections = sections;
+  deserialize(input: any) {
+    Object.assign(this, input);
+    this.id = input._id;
+    this.sections = input.sections ? input.sections.map(section => new Section().deserialize(section)) : new Section();
+    return this;
   }
 }
