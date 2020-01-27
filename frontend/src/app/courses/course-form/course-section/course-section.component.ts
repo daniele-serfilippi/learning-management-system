@@ -1,11 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
-import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/ui/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/shared/ui/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
-import { CourseService } from 'src/app/services/course.service';
-import { NotificationService } from 'src/app/services/notification.service';
+import { CourseService } from 'src/app/shared/services/course.service';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Component({
   selector: 'app-course-section',

@@ -6,13 +6,22 @@ const lectureSchema = new Schema({
         type: String,
         required: true
     },
+    type: {
+        type: String,
+        enum: ['video', 'text'],
+        required: true
+    },
     videoUrl: {
         type: String,
-        required: false
+        required: () => this.type === 'video'
     },
     duration: {
         type: String,
-        required: false
+        required: () => this.type === 'video'
+    },
+    text: {
+        type: String,
+        required: () => this.type === 'text'
     },
     isFree: {
         type: Boolean,

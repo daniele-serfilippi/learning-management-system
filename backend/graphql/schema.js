@@ -25,8 +25,10 @@ module.exports = buildSchema(`
     type Lecture {
         _id: ID!
         title: String
+        type: String
         videoUrl: String
         duration: String
+        text: String
         isFree: Boolean
     }
 
@@ -48,7 +50,9 @@ module.exports = buildSchema(`
     input LectureInput {
         id: ID
         title: String!
+        type: String
         videoUrl: String
+        text: String
         isFree: Boolean
     }
 

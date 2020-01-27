@@ -1,12 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
-import { CourseService } from 'src/app/services/course.service';
+import { CourseService } from 'src/app/shared/services/course.service';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Subject } from 'rxjs';
 import { MatDialog } from '@angular/material';
-import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/ui/confirm-dialog/confirm-dialog.component';
-import { NotificationService } from 'src/app/services/notification.service';
+import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/shared/ui/confirm-dialog/confirm-dialog.component';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Component({
   selector: 'app-course-lecture',

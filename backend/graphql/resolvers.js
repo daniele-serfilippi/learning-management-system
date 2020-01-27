@@ -121,10 +121,12 @@ module.exports = {
 
     const oldVideoUrl = lectureDocument.videoUrl;
     lectureDocument.title = lecture.title;
+    lectureDocument.type = lecture.type;
     lectureDocument.videoUrl = lecture.videoUrl;
+    lectureDocument.text = lecture.text;
     lectureDocument.isFree = lecture.isFree;
     if (! lectureDocument.duration || oldVideoUrl !== lecture.videoUrl) {
-      lectureDocument.duration = await getVideoDurationInSeconds(lecture.videoUrl);
+      lectureDocument.duration = Math.round(await getVideoDurationInSeconds(lecture.videoUrl));
     }
     const savedLecture = await lectureDocument.save();
 

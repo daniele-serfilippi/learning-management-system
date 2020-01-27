@@ -4,24 +4,24 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import { MaterialModule } from './modules/material.module';
-import { GraphQLModule } from './modules/graphql.module';
-import { AppRoutingModule } from './modules/app-routing.module';
+import { MaterialModule } from './shared/modules/material.module';
+import { GraphQLModule } from './shared/modules/graphql.module';
+import { AppRoutingModule } from './shared/modules/app-routing.module';
 
-import { GlobalErrorHandler } from './errorHandlers/global-error-handler';
-import { ServerErrorInterceptor } from './errorHandlers/server-error.interceptor';
+import { GlobalErrorHandler } from './shared/errorHandlers/global-error-handler';
+import { ServerErrorInterceptor } from './shared/errorHandlers/server-error.interceptor';
 
 import { AppComponent } from './app.component';
 import { CoursesComponent } from './courses/courses.component';
 import { CourseFormComponent } from './courses/course-form/course-form.component';
 import { CoursesListComponent } from './courses/courses-list/courses-list.component';
-import { ConfirmDialogComponent } from './ui/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from './shared/ui/confirm-dialog/confirm-dialog.component';
 import { CourseSectionComponent } from './courses/course-form/course-section/course-section.component';
 import { CourseLectureComponent } from './courses/course-form/course-section/course-lecture/course-lecture.component';
-import { DragDropVideoUploadComponent } from './ui/drag-drop-video-upload/drag-drop-video-upload.component';
-import { DragDropVideoUploadDirective } from './ui/drag-drop-video-upload/drag-drop-video-upload.directive';
-import { QuillMaterialComponent } from './ui/quill-material/quill-material.component';
-import { BottomToolbarComponent } from './ui/bottom-toolbar/bottom-toolbar.component';
+import { DragDropVideoUploadComponent } from './shared/ui/drag-drop-video-upload/drag-drop-video-upload.component';
+import { DragDropVideoUploadDirective } from './shared/ui/drag-drop-video-upload/drag-drop-video-upload.directive';
+import { QuillMaterialComponent } from './shared/ui/quill-material/quill-material.component';
+import { BottomToolbarComponent } from './shared/ui/bottom-toolbar/bottom-toolbar.component';
 
 @NgModule({
   declarations: [

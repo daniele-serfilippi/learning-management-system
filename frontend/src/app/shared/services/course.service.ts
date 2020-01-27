@@ -87,8 +87,10 @@ export class CourseService {
             lectures {
               _id
               title
+              type
               videoUrl
               duration
+              text
               isFree
             }
           }
@@ -138,8 +140,10 @@ export class CourseService {
               lectures {
                 _id
                 title
+                type
                 videoUrl
                 duration
+                text
                 isFree
               }
             }

@@ -3,12 +3,12 @@ import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import _ from 'lodash';
 
-import { NotificationService } from 'src/app/services/notification.service';
-import { CourseService } from 'src/app/services/course.service';
+import { NotificationService } from 'src/app/shared/services/notification.service';
+import { CourseService } from 'src/app/shared/services/course.service';
 import { environment } from 'src/environments/environment';
 import { Course } from '../course.model';
 import { MatDialog } from '@angular/material';
-import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/ui/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/shared/ui/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-course-form',
@@ -39,8 +39,10 @@ export class CourseFormComponent implements OnInit {
         this.fb.group({
           id: null,
           title: [null, Validators.required],
+          type: ['video', Validators.required],
           videoUrl: null,
-          isFree: false
+          text: null,
+          isFree: false,
         })
       ];
     }
@@ -51,7 +53,9 @@ export class CourseFormComponent implements OnInit {
         this.fb.group({
           id: lecture._id,
           title: [lecture.title, Validators.required],
+          type: [lecture.type, Validators.required],
           videoUrl: lecture.videoUrl,
+          text: lecture.text,
           isFree: lecture.isFree
         })
       );

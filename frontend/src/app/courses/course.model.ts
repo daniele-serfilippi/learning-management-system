@@ -1,12 +1,12 @@
 export class Course {
-  public id: string;
-  public title: string;
-  public subtitle: string;
-  public description: string;
-  public imageUrl: string;
-  public rating: number;
-  public price: number;
-  public sections: [];
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  imageUrl: string;
+  rating: number;
+  price: number;
+  sections: [];
 
   constructor(
     title: string,
