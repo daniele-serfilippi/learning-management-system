@@ -3,7 +3,7 @@
   <span *ngIf="editMode">Edit course</span>
 </h1>
 
-<form [formGroup]="courseFormGroup" novalidate (ngSubmit)="onSubmit()">
+<form [formGroup]="courseFormGroup" novalidate (ngSubmit)="onSubmit()" *ngIf="!editMode || (editMode && course)">
   <input
     *ngIf="editMode"
     type="hidden"
@@ -35,7 +35,7 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field class="quill">
+      <mat-form-field class="quill-material-container">
         <quill-material
           formControlName="description"
           placeholder="Description"

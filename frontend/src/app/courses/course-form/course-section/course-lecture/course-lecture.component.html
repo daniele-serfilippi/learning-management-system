@@ -38,6 +38,15 @@
             <mat-slide-toggle color="primary" formControlName="isFree">
               Free
             </mat-slide-toggle>
+
+            <mat-form-field class="quill-material-container" *ngIf="lecture.type === 'text' && lecture.title">
+              <quill-material
+                formControlName="text"
+                placeholder="Lecture content"
+                required
+              ></quill-material>
+            </mat-form-field>
+
           </div>
         </div>
 

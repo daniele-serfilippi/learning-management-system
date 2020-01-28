@@ -10,13 +10,15 @@ import {
   Injector,
   ViewChild,
   Output,
-  EventEmitter
+  EventEmitter,
+  Optional
 } from '@angular/core';
-import { NgControl, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NgControl, ControlValueAccessor, NG_VALUE_ACCESSOR, NgForm, FormGroupDirective, FormControl } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject } from 'rxjs';
 import Quill from 'quill';
+import { CanUpdateErrorState, ErrorStateMatcher } from '@angular/material';
 
 // tslint:disable-next-line: no-conflicting-lifecycle
 @Component({
@@ -41,12 +43,12 @@ export class QuillMaterialComponent implements
   DoCheck,
   OnDestroy,
   MatFormFieldControl<any>,
-  // CanUpdateErrorState,
+  CanUpdateErrorState,
   ControlValueAccessor {
 
   static nextId = 0;
 
-  @ViewChild('container', { read: ElementRef }) container: ElementRef;
+  @ViewChild('container', { static: true }) container: ElementRef;
   // @Output() changed: EventEmitter<any> = new EventEmitter();
 
   // ------------------------------ ID
@@ -83,8 +85,8 @@ export class QuillMaterialComponent implements
   _required = false;
 
   // ------------------------------ ERROR STATE MATCHER
-  // @Input()
-  // public errorStateMatcher: ErrorStateMatcher;
+  @Input()
+  public errorStateMatcher: ErrorStateMatcher;
 
   // ------------------------------ THEME
   @Input()
@@ -104,6 +106,19 @@ export class QuillMaterialComponent implements
 
   // set value(value: any) {
   //   console.log("set value: ", value)
+  //   this._value = value;
+  //   this.editor.setContents(this._value);
+  //   this.onChange(value);
+  //   this.stateChanges.next();
+  // }
+
+  // _value: any;
+
+  // get value(): any {
+  //   return this._value;
+  // }
+
+  // set value(value) {
   //   this._value = value;
   //   this.editor.setContents(this._value);
   //   this.onChange(value);
@@ -152,7 +167,7 @@ export class QuillMaterialComponent implements
     modules: {
       toolbar: [
         ['bold', 'italic', 'underline'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
         ['clean']
       ]
     }
@@ -161,10 +176,9 @@ export class QuillMaterialComponent implements
 
   // ------------------------------ CONSTRUCTOR
   constructor(
-    private el: ElementRef,
-    // private _defaultErrorStateMatcher: ErrorStateMatcher,
-    // @Optional() private _parentForm: NgForm,
-    // @Optional() private _parentFormGroup: FormGroupDirective,
+    private _defaultErrorStateMatcher: ErrorStateMatcher,
+    @Optional() private _parentForm: NgForm,
+    @Optional() private _parentFormGroup: FormGroupDirective,
     public injector: Injector
   ) { }
 
@@ -174,7 +188,7 @@ export class QuillMaterialComponent implements
     if (typeof options.theme === 'undefined') {
       options.theme = this.theme;
     }
-    const editor = this.el.nativeElement.querySelector('#editor');
+    const editor = this.container.nativeElement.querySelector('.editor');
 
     this.editor = new Quill(editor, options);
 
@@ -194,7 +208,7 @@ export class QuillMaterialComponent implements
       this.onChange(this.getValue());
     });
 
-    this.el.nativeElement.querySelector('.ql-editor').addEventListener('blur', () => {
+    editor.querySelector('.ql-editor').addEventListener('blur', () => {
       this.onTouched();
     });
   }
@@ -233,18 +247,18 @@ export class QuillMaterialComponent implements
     }
   }
 
-  // updateErrorState(): void {
-  //   const oldState = this.errorState;
-  //   const parent = this._parentFormGroup || this._parentForm;
-  //   const matcher = this.errorStateMatcher || this._defaultErrorStateMatcher;
-  //   const control = this.ngControl ? this.ngControl.control as FormControl : null;
-  //   const newState = matcher.isErrorState(control, parent);
+  updateErrorState(): void {
+    const oldState = this.errorState;
+    const parent = this._parentFormGroup || this._parentForm;
+    const matcher = this.errorStateMatcher || this._defaultErrorStateMatcher;
+    const control = this.ngControl ? this.ngControl.control as FormControl : null;
+    const newState = matcher.isErrorState(control, parent);
 
-  //   if (newState !== oldState) {
-  //     this.errorState = newState;
-  //     this.stateChanges.next();
-  //   }
-  // }
+    if (newState !== oldState) {
+      this.errorState = newState;
+      this.stateChanges.next();
+    }
+  }
 
   setDescribedByIds(ids: Array<string>): void {
   }
@@ -269,7 +283,6 @@ export class QuillMaterialComponent implements
     }
 
     const contents: any = this.editor.getContents();
-
     if (this.isEmpty(contents)) {
       return undefined;
     }
