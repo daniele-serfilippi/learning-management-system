@@ -53,6 +53,8 @@ export class QuillMaterialComponent implements OnInit, DoCheck, OnDestroy, Contr
   ngControl: any;
   touched = false;
   focused = false;
+
+  private writingValue = false;
   private defaultOptions = {
     modules: {
       toolbar: [
@@ -142,7 +144,7 @@ export class QuillMaterialComponent implements OnInit, DoCheck, OnDestroy, Contr
     }
     this.editor = new Quill(editorRef, options);
     this.editor.on('text-change', () => {
-      if (this.ngControl.touched) {
+      if (!this.writingValue) {
         this.onChange(this.getValue());
       }
     });
@@ -162,9 +164,11 @@ export class QuillMaterialComponent implements OnInit, DoCheck, OnDestroy, Contr
 
   writeValue(contents: any): void {
     if (this.editor && contents) {
+      this.writingValue = true;
       const delta = this.editor.clipboard.convert(contents); // convert html to delta
       this.editor.setContents(delta);
       this._value = contents;
+      this.writingValue = false;
     }
   }
 

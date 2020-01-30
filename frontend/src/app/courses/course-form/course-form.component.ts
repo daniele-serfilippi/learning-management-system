@@ -111,7 +111,7 @@ export class CourseFormComponent implements OnInit, OnDestroy, AfterContentCheck
     this.formChangesSubscription = formGroup.valueChanges.subscribe(
       changedFormValue => {
         this.formValueHasChanged = !_.isEqual(this.originalFormValue, changedFormValue);
-        this.course = new Course().deserialize(changedFormValue);
+        this.course = new Course().deserialize({...this.course, ...changedFormValue});
       }
     );
 
