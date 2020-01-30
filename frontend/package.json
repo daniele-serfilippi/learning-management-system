@@ -34,6 +34,7 @@
     "lodash": "^4.17.15",
     "ngx-material-file-input": "^2.0.0",
     "quill": "^1.3.7",
+    "quill-delta-to-html": "^0.11.0",
     "rxjs": "~6.5.4",
     "save": "^2.4.0",
     "tslib": "^1.10.0",

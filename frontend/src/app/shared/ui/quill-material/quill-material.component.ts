@@ -1,168 +1,58 @@
 import {
   Component,
   Input,
-  ElementRef,
-  DoCheck,
-  OnDestroy,
   OnInit,
-  HostBinding,
-  forwardRef,
-  Injector,
+  ElementRef,
   ViewChild,
-  Output,
-  EventEmitter,
-  Optional
+  forwardRef,
+  OnDestroy,
+  Injector,
+  DoCheck,
+  HostBinding
 } from '@angular/core';
-import { NgControl, ControlValueAccessor, NG_VALUE_ACCESSOR, NgForm, FormGroupDirective, FormControl } from '@angular/forms';
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { MatFormFieldControl } from '@angular/material/form-field';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor, NgControl } from '@angular/forms';
+import { MatFormFieldControl } from '@angular/material';
 import { Subject } from 'rxjs';
+import { FocusMonitor } from '@angular/cdk/a11y';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import Quill from 'quill';
-import { CanUpdateErrorState, ErrorStateMatcher } from '@angular/material';
+import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 
-// tslint:disable-next-line: no-conflicting-lifecycle
+const SELECTOR = 'quill-material';
+
 @Component({
-  selector: 'quill-material',
+  selector: SELECTOR,
   templateUrl: './quill-material.component.html',
   styleUrls: ['./quill-material.component.sass'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => QuillMaterialComponent),
-      multi: true
-    },
-    {
-      provide: MatFormFieldControl,
-      useExisting: QuillMaterialComponent,
-    },
-  ],
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => QuillMaterialComponent),
+    multi: true
+  },
+  {
+    provide: MatFormFieldControl,
+    useExisting: QuillMaterialComponent
+  }],
+  host: {
+    '[id]': 'id',
+    '[attr.aria-describedby]': 'describedBy'
+  }
 })
-export class QuillMaterialComponent implements
-  OnInit,
-  // OnChanges,
-  DoCheck,
-  OnDestroy,
-  MatFormFieldControl<any>,
-  CanUpdateErrorState,
-  ControlValueAccessor {
-
+export class QuillMaterialComponent implements OnInit, DoCheck, OnDestroy, ControlValueAccessor, MatFormFieldControl<any> {
   static nextId = 0;
-
-  @ViewChild('container', { static: true }) container: ElementRef;
-  // @Output() changed: EventEmitter<any> = new EventEmitter();
-
-  // ------------------------------ ID
   @HostBinding() id = `quill-material-${QuillMaterialComponent.nextId++}`;
 
-  // ------------------------------ CLASS
-  @HostBinding('class.floating') get shouldLabelFloat() {
-    return this.focused || !this.empty;
-  }
-  // public readonly shouldLabelFloat: boolean = true;
+  @ViewChild('container', { read: ElementRef, static: true }) container: ElementRef;
 
-  // ------------------------------ PLACEHOLDER
-  @Input()
-  get placeholder() {
-    return this._placeholder;
-  }
-  set placeholder(plh) {
-    this._placeholder = plh;
-    this.stateChanges.next();
-  }
-
-  _placeholder: string;
-
-  // ------------------------------ REQUIRED
-  @Input()
-  get required() {
-    return this._required;
-  }
-  set required(req) {
-    this._required = coerceBooleanProperty(req);
-    this.stateChanges.next();
-  }
-
-  _required = false;
-
-  // ------------------------------ ERROR STATE MATCHER
-  @Input()
-  public errorStateMatcher: ErrorStateMatcher;
-
-  // ------------------------------ THEME
-  @Input()
-  public theme = 'snow';
-
-  // ------------------------------ OPTIONS
-  @Input()
-  public options: any = null;
-
-  // ------------------------------ VALUE
-  // @Input() value: any;
-  // get value(): any {
-  //   console.log("get value: ", this._value)
-  //   return this.editor.root.innerHTML;
-  //   // return this._value;
-  // }
-
-  // set value(value: any) {
-  //   console.log("set value: ", value)
-  //   this._value = value;
-  //   this.editor.setContents(this._value);
-  //   this.onChange(value);
-  //   this.stateChanges.next();
-  // }
-
-  // _value: any;
-
-  // get value(): any {
-  //   return this._value;
-  // }
-
-  // set value(value) {
-  //   this._value = value;
-  //   this.editor.setContents(this._value);
-  //   this.onChange(value);
-  //   this.stateChanges.next();
-  // }
-
-  // _value: any;
-
-  // ------------------------------ DISABLED
-  @Input()
-  get disabled(): boolean {
-    return this._disabled;
-  }
-
-  set disabled(disabled: boolean) {
-    this._disabled = coerceBooleanProperty(disabled);
-    this.stateChanges.next();
-  }
-
-  _disabled = false;
-
-  // ------------------------------ EMPTY
-  get empty() {
-    const commentText = this.editor.getText().trim();
-    return commentText ? false : true;
-  }
-
-  // ------------------------------ FOCUSED
-  get focused(): boolean {
-    if (this.editor) {
-      return this.editor.hasFocus();
-    }
-    return false;
-  }
-
-  errorState = false;
   stateChanges = new Subject<void>();
+
   quill: any = Quill;
   editor: any;
   controlType = 'quill-material';
+  errorState = false;
   ngControl: any;
   touched = false;
-  value: any;
-  autofilled?: boolean;
+  focused = false;
   private defaultOptions = {
     modules: {
       toolbar: [
@@ -172,125 +62,149 @@ export class QuillMaterialComponent implements
       ]
     }
   };
-  // private defaultContents: any | undefined;
 
-  // ------------------------------ CONSTRUCTOR
-  constructor(
-    private _defaultErrorStateMatcher: ErrorStateMatcher,
-    @Optional() private _parentForm: NgForm,
-    @Optional() private _parentFormGroup: FormGroupDirective,
-    public injector: Injector
-  ) { }
+  _value: any;
 
-  ngOnInit(): void {
-    const options = this.options || this.defaultOptions;
+  get value(): any {
+    return this._value;
+  }
+  set value(value) {
+    this._value = value;
+    this.editor.setContents(this._value);
+    this.onChange(value);
+    this.stateChanges.next();
+  }
 
-    if (typeof options.theme === 'undefined') {
-      options.theme = this.theme;
-    }
-    const editor = this.container.nativeElement.querySelector('.editor');
+  @Input()
+  get placeholder() {
+    return this._placeholder;
+  }
+  set placeholder(plh) {
+    this._placeholder = plh;
+    this.stateChanges.next();
+  }
+  public _placeholder: string;
 
-    this.editor = new Quill(editor, options);
+  @Input()
+  get required() {
+    return this._required;
+  }
+  set required(req) {
+    this._required = coerceBooleanProperty(req);
+    this.stateChanges.next();
+  }
+  public _required = false;
 
-    // this.editor.on('editor-change', (eventName, ...args) => {
-    //   console.log('ON editor-change', this.editor.getContents());
-    //   this.changed.emit(this.editor.getContents());
-    // });
+  @Input()
+  get disabled() {
+    return this._disabled;
+  }
+  set disabled(disabled) {
+    this._disabled = coerceBooleanProperty(disabled);
+    this.stateChanges.next();
+  }
+  public _disabled = false;
 
-    // ____________________________________________________________
+  get empty() {
+    const text = this.editor.getText().trim();
+    return text ? false : true;
+  }
 
-    this.ngControl = this.injector.get(NgControl);
-    if (this.ngControl != null) {
-      this.ngControl.valueAccessor = this;
-    }
+  @Input()
+  options: any = null;
 
-    this.editor.on('text-change', () => {
-      this.onChange(this.getValue());
-    });
+  @HostBinding('class.floating')
+  get shouldLabelFloat() {
+    return this.focused || !this.empty;
+  }
 
-    editor.querySelector('.ql-editor').addEventListener('blur', () => {
-      this.onTouched();
+  @HostBinding('attr.aria-describedby') describedBy = '';
+  setDescribedByIds(ids: string[]) {
+    this.describedBy = ids.join(' ');
+  }
+
+  constructor(public elRef: ElementRef, public injector: Injector, public fm: FocusMonitor) {
+    fm.monitor(elRef.nativeElement, true).subscribe(origin => {
+      this.focused = !!origin;
+      this.stateChanges.next();
     });
   }
 
-  // ngOnChanges(changes: SimpleChanges): void {
-  //   console.log("LIFECYCLE ngOnChanges: ", changes)
-  //   // if (typeof changes['value'] !== 'undefined' || typeof changes['required'] !== 'undefined') {
-  //   //   this.stateChanges.next();
-  //   // }
-  //   if (this.editor) {
-  //     this.editor.setContents(this.value);
-  //   }
-  // }
+  ngOnInit(): void {
+    // avoid Cyclic Dependency
+    this.ngControl = this.injector.get(NgControl);
+    if (this.ngControl != null) { this.ngControl.valueAccessor = this; }
+
+    const editorRef = this.container.nativeElement.querySelector('.editor');
+    const options = this.options || this.defaultOptions;
+    if (typeof options.theme === 'undefined') {
+      options.theme = 'snow';
+    }
+    this.editor = new Quill(editorRef, options);
+    this.editor.on('text-change', () => {
+      if (this.ngControl.touched) {
+        this.onChange(this.getValue());
+      }
+    });
+  }
 
   ngDoCheck(): void {
     if (this.ngControl) {
-      this.errorState = this.ngControl.invalid && this.ngControl.touched;
+      this.errorState = this.ngControl.invalid && this.ngControl.touched && !this.focused;
       this.stateChanges.next();
     }
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.stateChanges.complete();
-  }
-
-  onContainerClick(event: MouseEvent): void {
-    if (!this.focused) {
-      this.focus();
-    }
-  }
-
-  focus(): void {
-    if (this.editor) {
-      this.editor.focus();
-      this.stateChanges.next();
-    }
-  }
-
-  updateErrorState(): void {
-    const oldState = this.errorState;
-    const parent = this._parentFormGroup || this._parentForm;
-    const matcher = this.errorStateMatcher || this._defaultErrorStateMatcher;
-    const control = this.ngControl ? this.ngControl.control as FormControl : null;
-    const newState = matcher.isErrorState(control, parent);
-
-    if (newState !== oldState) {
-      this.errorState = newState;
-      this.stateChanges.next();
-    }
-  }
-
-  setDescribedByIds(ids: Array<string>): void {
+    this.fm.stopMonitoring(this.elRef.nativeElement);
   }
 
   writeValue(contents: any): void {
     if (this.editor && contents) {
-      this.editor.root.innerHTML = contents;
+      const delta = this.editor.clipboard.convert(contents); // convert html to delta
+      this.editor.setContents(delta);
+      this._value = contents;
     }
   }
 
-  registerOnChange(fn: any): void {
+  onChange = (delta: any) => { };
+
+  registerOnChange(fn: (v: any) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  onTouched = () => { };
+
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
-  protected getValue(): any | undefined {
+  onContainerClick(event: MouseEvent) {
+    if (!this.focused) {
+      this.editor.focus();
+      this.focused = true;
+      this.stateChanges.next();
+    }
+  }
+
+  private getValue(): any | undefined {
     if (!this.editor) {
       return undefined;
     }
 
-    const contents: any = this.editor.getContents();
-    if (this.isEmpty(contents)) {
+    const delta: any = this.editor.getContents();
+    if (this.isEmpty(delta)) {
       return undefined;
     }
 
-    return this.editor.root.innerHTML;
+    const converter = new QuillDeltaToHtmlConverter(delta.ops, {});
+    const html = converter.convert();
+
+    return html;
   }
 
-  protected isEmpty(contents: any): boolean {
+  private isEmpty(contents: any): boolean {
     if (contents.ops.length > 1) {
       return false;
     }
@@ -311,11 +225,4 @@ export class QuillMaterialComponent implements
 
     return true;
   }
-
-  onTouched = () => {
-    this.touched = true;
-  }
-
-  private onChange = (_: any) => { };
-
 }

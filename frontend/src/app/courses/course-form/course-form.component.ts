@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import _ from 'lodash';
@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './course-form.component.html',
   styleUrls: ['./course-form.component.sass']
 })
-export class CourseFormComponent implements OnInit, OnDestroy {
+export class CourseFormComponent implements OnInit, OnDestroy, AfterContentChecked {
   formChangesSubscription: Subscription;
   course: Course;
   courseFormGroup: FormGroup;
@@ -31,7 +31,8 @@ export class CourseFormComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private courseService: CourseService,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private changeDetector: ChangeDetectorRef
   ) { }
 
   getFormGroupLectures(lectures: any): FormGroup[] {
@@ -107,8 +108,11 @@ export class CourseFormComponent implements OnInit, OnDestroy {
     this.originalFormValue = formGroup.value;
     this.formValueHasChanged = false;
 
-    formGroup.valueChanges.subscribe(
-      changedFormValue => { this.formValueHasChanged = !_.isEqual(this.originalFormValue, changedFormValue) }
+    this.formChangesSubscription = formGroup.valueChanges.subscribe(
+      changedFormValue => {
+        this.formValueHasChanged = !_.isEqual(this.originalFormValue, changedFormValue);
+        this.course = new Course().deserialize(changedFormValue);
+      }
     );
 
     return formGroup;
@@ -116,7 +120,6 @@ export class CourseFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.courseFormGroup = this.setForm();
-    this.formChangesSubscription = this.subcribeToFormChanges();
 
     if (this.route.snapshot.params.id) { // editing mode
       const id = this.route.snapshot.params.id;
@@ -131,13 +134,12 @@ export class CourseFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    this.formChangesSubscription.unsubscribe();
+  ngAfterContentChecked(): void {
+    this.changeDetector.detectChanges();
   }
 
-  subcribeToFormChanges() {
-    const formValueChanges$ = this.courseFormGroup.valueChanges;
-    return formValueChanges$.subscribe(formValue => { this.course = new Course().deserialize(formValue); });
+  ngOnDestroy(): void {
+    this.formChangesSubscription.unsubscribe();
   }
 
   onSubmit() {

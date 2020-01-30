@@ -35,7 +35,7 @@ export class CourseLectureComponent implements OnInit, OnDestroy {
   constructor(
     private courseService: CourseService,
     private notificationService: NotificationService,
-    private dialog: MatDialog,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
