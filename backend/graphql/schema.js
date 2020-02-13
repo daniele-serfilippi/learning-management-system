@@ -33,6 +33,7 @@ module.exports = buildSchema(`
     }
 
     input CourseInput {
+        id: ID
         title: String!
         subtitle: String!
         description: String!

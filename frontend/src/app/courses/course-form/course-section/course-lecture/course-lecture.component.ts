@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { FormGroup, FormArray } from '@angular/forms';
+import { FormGroup, FormArray, ValidationErrors } from '@angular/forms';
 import { CourseService } from 'src/app/shared/services/course.service';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -51,7 +51,35 @@ export class CourseLectureComponent implements OnInit, OnDestroy {
 
   subcribeToFormChanges() {
     const formValueChanges$ = this.lectureFormGroup.valueChanges;
-    return formValueChanges$.subscribe(formValue => { this.lecture = new Lecture().deserialize(formValue); });
+    return formValueChanges$.subscribe(formValue => { this.lecture = new Lecture().deserialize(formValue); this.getFormValidationErrors()});
+  }
+
+  getFormValidationErrors() {
+    // tslint:disable-next-line: forin
+    for (const control in this.lectureFormGroup.controls) {
+      console.log(control)
+      if (this.courseFormGroup.get(control)) {
+        const controlErrors: ValidationErrors = this.courseFormGroup.get(control).errors;
+        if (controlErrors != null) {
+          Object.keys(controlErrors).forEach(keyError => {
+            console.log('Key control: ' + control + ', keyError: ' + keyError + ', err value: ', controlErrors[keyError]);
+          });
+        }
+      }
+    };
+
+
+
+    // for (const i in this.courseFormGroup.controls.sections['controls']) {
+    //   for (const control in this.courseFormGroup.controls.sections['controls'][i]['controls']) {
+    //     const controlErrors: ValidationErrors = this.courseFormGroup.controls.sections['controls'][i]['controls'][control].errors;
+    //     if (controlErrors != null) {
+    //       Object.keys(controlErrors).forEach(keyError => {
+    //         console.log('Key control: ' + control + ', keyError: ' + keyError + ', err value: ', controlErrors[keyError]);
+    //       });
+    //     }
+    //   }
+    // }
   }
 
   onVideoSelected(videoFile: File) {

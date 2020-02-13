@@ -1,10 +1,8 @@
 <div [formGroup]="lectureFormGroup">
-  <input
-    type="hidden"
-    formControlName="id"
-  />
+  <input type="hidden" formControlName="id"/>
 
   <input
+    *ngIf="lecture.type === 'video'"
     type="hidden"
     formControlName="videoUrl"
     required

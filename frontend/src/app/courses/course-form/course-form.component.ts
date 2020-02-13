@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
-import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, FormArray, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import _ from 'lodash';
 import { NotificationService } from 'src/app/shared/services/notification.service';
@@ -111,7 +111,7 @@ export class CourseFormComponent implements OnInit, OnDestroy, AfterContentCheck
     this.formChangesSubscription = formGroup.valueChanges.subscribe(
       changedFormValue => {
         this.formValueHasChanged = !_.isEqual(this.originalFormValue, changedFormValue);
-        this.course = new Course().deserialize({...this.course, ...changedFormValue});
+        this.course = new Course().deserialize({ ...this.course, ...changedFormValue });
       }
     );
 

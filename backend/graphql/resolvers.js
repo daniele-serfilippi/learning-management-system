@@ -1,31 +1,11 @@
-const fs = require("fs");
 const validator = require("validator");
 const { GraphQLUpload } = require("graphql-upload");
 const { getVideoDurationInSeconds } = require('get-video-duration');
 
-const { clearMedia } = require("../utils/file");
+const { clearMedia, storeImage } = require("../utils/file");
 
 const Course = require("../models/course");
 const Lecture = require("../models/lecture");
-
-const storeFS = ({ stream, filename }) => {
-  const uploadDir = "images";
-  const newFilename = new Date().getTime() + "-" + filename;
-  const path = `${uploadDir}/${newFilename}`;
-
-  return new Promise((resolve, reject) =>
-    stream
-      .on("error", error => {
-        if (stream.truncated)
-          // delete the truncated file
-          fs.unlinkSync("./" + path);
-        reject(error);
-      })
-      .pipe(fs.createWriteStream("./" + path))
-      .on("error", error => reject(error))
-      .on("finish", () => resolve({ path }))
-  );
-};
 
 const validateCourseInput = courseInput => {
   const errors = [];
@@ -41,6 +21,39 @@ const validateCourseInput = courseInput => {
   if (validator.isEmpty(courseInput.price.toString())) {
     errors.push({ message: "Price is required." });
   }
+  if (!courseInput.id && !courseInput.image) { // image required only on course creation
+    errors.push({ message: "Image is required." });
+  }
+
+  if (!courseInput.sections || courseInput.sections.length === 0) {
+    errors.push({ message: "At least on section is required." });
+  } else {
+    for (const section of courseInput.sections) {
+      if (validator.isEmpty(section.title)) {
+        errors.push({ message: "Section title is required." });
+      }
+      if (!section.lectures || section.lectures.length === 0) {
+        errors.push({ message: "At least on lecture is required in each section." });
+      } else {
+        for (const lecture of section.lectures) {
+          if (validator.isEmpty(lecture.title)) {
+            errors.push({ message: "Lecture title is required." });
+          }
+          if (validator.isEmpty(lecture.type)) {
+            errors.push({ message: "Lecture type is required." });
+          }
+          if (lecture.type === 'video' && validator.isEmpty(lecture.videoUrl)) {
+            errors.push({ message: "Lecture video is required." });
+          }
+          if (lecture.type === 'text' && validator.isEmpty(lecture.text)) {
+            errors.push({ message: "Lecture content is required." });
+          }
+        }
+      }
+    }
+  }
+
+
   if (errors.length > 0) {
     const error = new Error("Invalid input.");
     error.data = errors;
@@ -67,7 +80,7 @@ module.exports = {
 
     const { filename, mimetype, createReadStream } = await courseInput.image;
     const stream = createReadStream();
-    const pathObj = await storeFS({ stream, filename });
+    const pathObj = await storeImage({ stream, filename });
     const fileLocation = pathObj.path;
 
     const course = new Course({
@@ -150,7 +163,7 @@ module.exports = {
       throw error;
     }
 
-    validateCourseInput(courseInput);
+    validateCourseInput({id, ...courseInput});
 
     course.title = courseInput.title;
     course.subtitle = courseInput.subtitle;
@@ -164,7 +177,7 @@ module.exports = {
       oldImageUrl = course.imageUrl;
       const { filename, mimetype, createReadStream } = uploadedImage;
       const stream = createReadStream();
-      const pathObj = await storeFS({ stream, filename });
+      const pathObj = await storeImage({ stream, filename });
       const fileLocation = pathObj.path;
       course.imageUrl = fileLocation;
     }
