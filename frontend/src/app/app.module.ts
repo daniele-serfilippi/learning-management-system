@@ -25,6 +25,15 @@ import { DragDropVideoUploadComponent } from './shared/ui/drag-drop-video-upload
 import { DragDropVideoUploadDirective } from './shared/ui/drag-drop-video-upload/drag-drop-video-upload.directive';
 import { QuillMaterialComponent } from './shared/ui/quill-material/quill-material.component';
 import { BottomToolbarComponent } from './shared/ui/bottom-toolbar/bottom-toolbar.component';
+import { LoaderComponent } from './shared/ui/loader/loader.component';
+import { AuthComponent } from './auth/auth.component';
+import { SignInComponent } from './auth/sign-in/sign-in.component';
+import { SignUpComponent } from './auth/sign-up/sign-up.component';
+import { ConfirmCodeComponent } from './auth/confirm-code/confirm-code.component';
+import { ProfileComponent } from './auth/profile/profile.component';
+import { AvatarComponent } from './auth/profile/avatar/avatar.component';
+import { AuthService } from './auth/auth.service';
+import { MainNavComponent } from './shared/main-nav/main-nav.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +47,15 @@ import { BottomToolbarComponent } from './shared/ui/bottom-toolbar/bottom-toolba
     DragDropVideoUploadComponent,
     DragDropVideoUploadDirective,
     QuillMaterialComponent,
-    BottomToolbarComponent
+    BottomToolbarComponent,
+    LoaderComponent,
+    AuthComponent,
+    SignInComponent,
+    SignUpComponent,
+    ConfirmCodeComponent,
+    ProfileComponent,
+    AvatarComponent,
+    MainNavComponent
   ],
   imports: [
     BrowserModule,
@@ -52,6 +69,7 @@ import { BottomToolbarComponent } from './shared/ui/bottom-toolbar/bottom-toolba
     AmplifyAngularModule
   ],
   providers: [
+    AuthService,
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     { provide: HTTP_INTERCEPTORS, useClass: ServerErrorInterceptor, multi: true },
     {
@@ -63,6 +81,7 @@ import { BottomToolbarComponent } from './shared/ui/bottom-toolbar/bottom-toolba
       }
     }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ LoaderComponent ]
 })
 export class AppModule { }

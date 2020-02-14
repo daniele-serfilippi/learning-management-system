@@ -1,0 +1,17 @@
+{
+    "projectName": "lms",
+    "version": "3.0",
+    "frontend": "javascript",
+    "javascript": {
+        "framework": "angular",
+        "config": {
+            "SourceDir": "frontend/src",
+            "DistributionDir": "backend/angular",
+            "BuildCommand": "npm --prefix frontend run build",
+            "StartCommand": "npm --prefix frontend run start"
+        }
+    },
+    "providers": [
+        "awscloudformation"
+    ]
+}

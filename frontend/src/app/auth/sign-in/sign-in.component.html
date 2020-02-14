@@ -1,0 +1,32 @@
+<mat-card id="signin">
+  <mat-card-content>
+    <form [formGroup]="signinForm">
+      <h2>Sign in to your account</h2>
+      <mat-form-field>
+        <input matInput placeholder="Email" type="email" formControlName="email" autocomplete="email" required>
+        <mat-error *ngIf="!emailInput.valid">
+          {{getEmailInputError()}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Password" [type]="hide ? 'password' : 'text'" formControlName="password" required>
+        <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        <mat-error *ngIf="!passwordInput.valid">
+          {{getPasswordInputError()}}
+        </mat-error>
+      </mat-form-field>
+      <button mat-raised-button type="submit" color="primary" (click)="signIn()" [disabled]="!signinForm.valid">Sign In</button>
+
+      <p class="text-center">or</p>
+      <div class="text-center d-flex flex-column">
+        <button mat-raised-button type="button" class="m-2" color="primary" (click)="signInWithFacebook()">
+          Sign In with Facebook
+        </button>
+        <button mat-raised-button type="button" class="m-2" color="primary" (click)="signInWithGoogle()">
+          Sign In with Google
+        </button>
+        <p class="m-2">Don't have an account? <a routerLink="/auth/signup">Sign up</a></p>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

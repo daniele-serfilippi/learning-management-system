@@ -1,0 +1,16 @@
+{
+	"auth": {
+		"lms21bf9ed8": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [],
+			"customAuth": false
+		}
+	},
+	"storage": {
+		"lms": {
+			"service": "S3",
+			"providerPlugin": "awscloudformation"
+		}
+	}
+}

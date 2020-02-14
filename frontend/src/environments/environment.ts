@@ -4,7 +4,11 @@
 
 export const environment = {
   backendURL: 'http://localhost:8080/',
-  production: false
+  production: false,
+  confirm: {
+    email: '',
+    password: ''
+ }
 };
 
 /*
