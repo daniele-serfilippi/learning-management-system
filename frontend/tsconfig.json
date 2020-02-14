@@ -18,10 +18,10 @@
       "es2018",
       "dom",
       "esnext.asynciterable"
-    ]
+    ],
+    "types" : ["node"]
   },
   "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true
+    "enableIvy": false
   }
 }

@@ -17,7 +17,7 @@ import { Observable, Subscription } from 'rxjs';
   styleUrls: ['./drag-drop-video-upload.component.sass']
 })
 export class DragDropVideoUploadComponent implements OnInit, OnDestroy {
-  @ViewChild('fileField') fileField: ElementRef<HTMLElement>;
+  @ViewChild('fileField', {static: false}) fileField: ElementRef<HTMLElement>;
   @Input() placeholder = 'Drag file or click';
   @Input() onChangeVideo: Observable<void>;
   @Output() videoSelected = new EventEmitter<File>();

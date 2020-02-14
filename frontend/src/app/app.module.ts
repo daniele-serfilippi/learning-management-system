@@ -11,6 +11,9 @@ import { AppRoutingModule } from './shared/modules/app-routing.module';
 import { GlobalErrorHandler } from './shared/errorHandlers/global-error-handler';
 import { ServerErrorInterceptor } from './shared/errorHandlers/server-error.interceptor';
 
+import { AmplifyAngularModule, AmplifyService, AmplifyModules } from 'aws-amplify-angular';
+import Auth from '@aws-amplify/auth';
+
 import { AppComponent } from './app.component';
 import { CoursesComponent } from './courses/courses.component';
 import { CourseFormComponent } from './courses/course-form/course-form.component';
@@ -45,12 +48,20 @@ import { BottomToolbarComponent } from './shared/ui/bottom-toolbar/bottom-toolba
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    GraphQLModule
+    GraphQLModule,
+    AmplifyAngularModule
   ],
   providers: [
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
-    { provide: HTTP_INTERCEPTORS, useClass: ServerErrorInterceptor, multi: true }
-
+    { provide: HTTP_INTERCEPTORS, useClass: ServerErrorInterceptor, multi: true },
+    {
+      provide: AmplifyService,
+      useFactory:  () => {
+        return AmplifyModules({
+          Auth
+        });
+      }
+    }
   ],
   bootstrap: [AppComponent]
 })
