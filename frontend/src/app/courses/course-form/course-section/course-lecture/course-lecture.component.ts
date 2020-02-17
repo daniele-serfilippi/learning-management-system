@@ -4,7 +4,7 @@ import { CourseService } from 'src/app/shared/services/course.service';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Subject, Subscription } from 'rxjs';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/shared/ui/confirm-dialog/confirm-dialog.component';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { Lecture } from 'src/app/shared/models/lecture.model';

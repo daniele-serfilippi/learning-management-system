@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav } from '@angular/material/sidenav';
 import Auth from '@aws-amplify/auth';
 import { AuthService } from 'src/app/auth/auth.service';
 import { SidenavService } from './sidenav.service';

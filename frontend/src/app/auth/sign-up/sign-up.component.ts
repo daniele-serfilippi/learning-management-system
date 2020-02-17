@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatBottomSheet } from '@angular/material';
 import { AuthService } from '../auth.service';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';

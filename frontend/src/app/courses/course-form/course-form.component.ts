@@ -6,7 +6,7 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 import { CourseService } from 'src/app/shared/services/course.service';
 import { environment } from 'src/environments/environment';
 import { Course } from 'src/app/shared/models/course.model';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/shared/ui/confirm-dialog/confirm-dialog.component';
 import { Subscription } from 'rxjs';
 
