@@ -1,29 +1,14 @@
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-  <a class="navbar-brand" href="#">LMS</a>
-  <button
-    class="navbar-toggler"
-    type="button"
-    data-toggle="collapse"
-    data-target="#navbarsExampleDefault"
-    aria-controls="navbarsExampleDefault"
-    aria-expanded="false"
-    aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+<!-- <main-nav>
+  <main role="main" class="container">
+    <router-outlet></router-outlet>
+  </main>
+</main-nav> -->
 
-  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/courses">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/course/create">New course</a>
-      </li>
-    </ul>
-    <a class="btn" href="#">Sign up</a>
-  </div>
-</nav>
+<!--
 
-<main role="main" class="container">
-  <router-outlet></router-outlet>
-</main><!-- /.container -->
+  The App use's side navigation so we just need to include the Nav Component which hosts the Sidenav container and the
+  Sidenav content area (i.e., the router-outlet).
+
+-->
+
+<app-nav></app-nav>

@@ -1,6 +1,13 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" [ngClass]="{hidden: !(isHandset | async)!.matches}" fixedInViewport="false" [attr.role]="isHandset ? 'dialog' : 'navigation'"
-    [mode]="(isHandset | async)!.matches ? 'over' : 'side'" [opened]="!(isHandset | async)!.matches">
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    [ngClass]="{hidden: !(isHandset | async)!.matches}"
+    fixedInViewport="false"
+    [attr.role]="isHandset ? 'dialog' : 'navigation'"
+    [mode]="(isHandset | async)!.matches ? 'over' : 'side'"
+    [opened]="!(isHandset | async)!.matches"
+  >
     <mat-toolbar color="primary">Menu</mat-toolbar>
     <mat-nav-list>
       <a mat-list-item href="#">Link 1</a>
