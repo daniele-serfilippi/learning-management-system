@@ -1,4 +1,4 @@
-<app-side-bar *ngIf="isAuthenticated()" (toggleSidenav)="navigationSidenav.toggle()"></app-side-bar>
+<app-top-bar *ngIf="isAuthenticated()" (toggleSidenav)="navigationSidenav.toggle()"></app-top-bar>
 
 <mat-sidenav-container autosize>
 
@@ -12,13 +12,13 @@
 
     <mat-nav-list>
 
-      <ng-container *ngIf="myWorkRoutes">
+      <ng-container *ngIf="courseRoutes">
 
-        <h2 matSubheader> {{ 'MY_WORK' }} </h2>
+        <h2 matSubheader>Courses</h2>
 
         <a mat-list-item routerLink="/" style="height: 0;"></a>
 
-        <a *ngFor="let item of myWorkRoutes"
+        <a *ngFor="let item of courseRoutes"
            mat-list-item
            (click)="navigationSidenav.close()"
            [routerLink]="[item.route]"
@@ -28,21 +28,6 @@
         </a>
 
         <mat-divider></mat-divider>
-
-      </ng-container>
-
-      <ng-container *ngIf="customerRoutes">
-
-        <h2 matSubheader> {{ 'CUSTOMERS' }} </h2>
-
-        <a *ngFor="let item of customerRoutes"
-           mat-list-item
-           (click)="navigationSidenav.close()"
-           [routerLink]="[item.route]"
-           routerLinkActive="list-item-active">
-          <mat-icon matListIcon class="nav-list-icon"> {{ item.icon }} </mat-icon>
-          {{item.title}}
-        </a>
 
       </ng-container>
 

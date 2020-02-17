@@ -3,11 +3,11 @@ import { NavigationEnd, Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
-  selector: 'app-side-bar',
-  templateUrl: './side-bar.component.html',
-  styleUrls: ['./side-bar.component.sass']
+  selector: 'app-top-bar',
+  templateUrl: './top-bar.component.html',
+  styleUrls: ['./top-bar.component.sass']
 })
-export class SideBarComponent {
+export class TopBarComponent {
 
   @Output() toggleSidenav = new EventEmitter<void>();
 
@@ -27,7 +27,7 @@ export class SideBarComponent {
   }
 
   public onProfile() {
-    this.router.navigate(['users/profile']);
+    this.router.navigate(['/auth/profile']);
   }
 
   public logout() {

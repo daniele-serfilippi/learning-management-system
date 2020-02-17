@@ -36,7 +36,7 @@ import { AuthService } from './auth/auth.service';
 // import { MainNavComponent } from './shared/main-nav/main-nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { NavComponent } from './shared/nav/nav.component';
-import { SideBarComponent } from './shared/side-bar/side-bar.component';
+import { TopBarComponent } from './shared/top-bar/top-bar.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
@@ -60,7 +60,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     ProfileComponent,
     AvatarComponent,
     NavComponent,
-    SideBarComponent
+    TopBarComponent
     // MainNavComponent
   ],
   imports: [

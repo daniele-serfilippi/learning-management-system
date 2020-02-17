@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import Auth from '@aws-amplify/auth';
 import { AuthService } from 'src/app/auth/auth.service';
-import { SidenavService } from './sidenav.service';
+import { NavService } from './nav.service';
 
 interface SideNavRoute {
   icon?: string;
@@ -20,52 +20,28 @@ export class NavComponent implements OnInit, OnDestroy {
   @ViewChild('commandbarSidenav', { static: true })
   public sidenav: MatSidenav;
 
-  public myWorkRoutes: SideNavRoute[];
-  public customerRoutes: SideNavRoute[];
+  public courseRoutes: SideNavRoute[];
 
   constructor(
-    private commandBarSidenavService: SidenavService
+    private commandBarNavService: NavService
   ) { }
 
   public ngOnInit(): void {
-    this.commandBarSidenavService.setSidenav(this.sidenav);
+    this.commandBarNavService.setSidenav(this.sidenav);
     this.loadNavListItems();
   }
 
   async loadNavListItems() {
-    this.myWorkRoutes = [
+    this.courseRoutes = [
       {
-        "icon": "assignment",
-        "route": "sales/activities",
-        "title": "ACTIVITIES"
+        icon: 'dashboard',
+        route: 'courses',
+        title: 'All'
       },
       {
-        "icon": "dashboard",
-        "route": "sales/dashboards",
-        "title": "DASHBOARDS"
-      }
-    ];
-
-    this.customerRoutes = [
-      {
-        "icon": "contacts",
-        "route": "sales/accounts",
-        "title": "ACCOUNTS"
-      },
-      {
-        "icon": "people",
-        "route": "sales/contacts",
-        "title": "CONTACTS"
-      },
-      {
-        "icon": "settings_phone",
-        "route": "leads",
-        "title": "LEADS"
-      },
-      {
-        "icon": "account_box",
-        "route": "opportunities",
-        "title": "OPPORTUNITIES"
+        icon: 'add',
+        route: 'course/create',
+        title: 'New course'
       }
     ];
   }
