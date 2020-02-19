@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
 
@@ -7,11 +7,11 @@ import { AuthService } from 'src/app/auth/auth.service';
   templateUrl: './top-bar.component.html',
   styleUrls: ['./top-bar.component.sass']
 })
-export class TopBarComponent {
-
+export class TopBarComponent implements OnInit {
   @Output() toggleSidenav = new EventEmitter<void>();
 
   private returnUrl = '/';
+  loggedIn = false;
 
   constructor(
     private authService: AuthService,
@@ -26,11 +26,19 @@ export class TopBarComponent {
 
   }
 
-  public onProfile() {
+  ngOnInit(): void {
+    this.loggedIn = this.authService.loggedIn;
+  }
+
+  onSignIn() {
+    this.router.navigate(['/auth/signin']);
+  }
+
+  onProfile() {
     this.router.navigate(['/auth/profile']);
   }
 
-  public logout() {
+  onLogout() {
     this.authService.signOut();
   }
 

@@ -34,7 +34,7 @@ export class AuthComponent implements OnInit {
       .then(() => {
         this.router.navigate(['auth/profile']);
       })
-      .catch(() => { });
+      .catch(error => { console.log(error) });
   }
 
 }

@@ -34,7 +34,8 @@ export class ProfileComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private notificationService: NotificationService,
-    public loading: LoaderService) { }
+    public loading: LoaderService
+  ) { }
 
   ngOnInit() {
     this.loading.show();
@@ -44,13 +45,13 @@ export class ProfileComponent implements OnInit {
   async getUserInfo() {
     this.profile = await Auth.currentUserInfo();
     this.user = await Auth.currentAuthenticatedUser();
-    if (this.profile.attributes['profile']) {
-      this.avatar = this.profile.attributes['profile'];
+    if (this.profile.attributes.profile) {
+      this.avatar = this.profile.attributes.profile;
       this.currentAvatarUrl = await Storage.vault.get(this.avatar) as string;
     }
-    this.fnameInput.setValue(this.profile.attributes['given_name']);
-    this.lnameInput.setValue(this.profile.attributes['family_name']);
-    this.phoneInput.setValue(this.profile.attributes['phone_number']);
+    this.fnameInput.setValue(this.profile.attributes.given_name);
+    this.lnameInput.setValue(this.profile.attributes.family_name);
+    this.phoneInput.setValue(this.profile.attributes.phone_number);
     this.loading.hide();
   }
 
@@ -65,12 +66,18 @@ export class ProfileComponent implements OnInit {
 
   signOut() {
     this.authService.signOut()
-      .then(() => this.router.navigate(['auth/signin']))
+      .then(() => this.router.navigate(['/']))
   }
 
-  onAvatarUploadComplete(data: any) {
+  onLoaded(event: any) {
+    // this.loading.show();
+  }
+
+  async onAvatarUploadComplete(data: any) {
+    console.log(await Storage.get(data.key))
+    // this.currentAvatarUrl = await Storage.get(data.key);
     this.avatar = data.key;
-    this.loading.hide();
+    // this.loading.hide();
   }
 
   onAvatarRemove() {
@@ -87,11 +94,11 @@ export class ProfileComponent implements OnInit {
         phone_number: this.phoneInput.value
       };
       if (this.avatar) {
-        attributes["profile"] = this.avatar;
+        attributes['profile'] = this.avatar;
       }
       await Auth.updateUserAttributes(this.user, attributes);
       if (!this.avatar && this.deleteAvatar) {
-        this.user.deleteAttributes(["profile"], (error) => {
+        this.user.deleteAttributes(['profile'], (error) => {
           if (error) {
             console.log(error);
           }

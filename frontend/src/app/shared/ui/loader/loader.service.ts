@@ -10,12 +10,12 @@ export class LoaderService {
   dialogRef: MatDialogRef<LoaderComponent>;
   constructor(private _dialog: MatDialog) { }
 
-  show(message: string = "Please wait..."): void {
+  show(message: string = 'Please wait...'): void {
     setTimeout(() => {
       this.loading = true;
       this.dialogRef = this._dialog.open(LoaderComponent, {
         width: '80%',
-        data: { 'message': message },
+        data: { message },
         closeOnNavigation: false
       });
     });

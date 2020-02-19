@@ -68,4 +68,8 @@ export class AuthService {
     });
   }
 
+  async loggedUser() {
+    return await Auth.currentAuthenticatedUser;
+  }
+
 }

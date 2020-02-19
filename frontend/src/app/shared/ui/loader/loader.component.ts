@@ -8,7 +8,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class LoaderComponent implements OnInit {
 
-  message = "Please wait...";
+  message = 'Please wait...';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any

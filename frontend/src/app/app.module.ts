@@ -13,6 +13,7 @@ import { ServerErrorInterceptor } from './shared/errorHandlers/server-error.inte
 
 import { AmplifyAngularModule, AmplifyService, AmplifyModules } from 'aws-amplify-angular';
 import Auth from '@aws-amplify/auth';
+import Storage from '@aws-amplify/storage';
 
 import { AppComponent } from './app.component';
 import { CoursesComponent } from './courses/courses.component';
@@ -33,7 +34,6 @@ import { ConfirmCodeComponent } from './auth/confirm-code/confirm-code.component
 import { ProfileComponent } from './auth/profile/profile.component';
 import { AvatarComponent } from './auth/profile/avatar/avatar.component';
 import { AuthService } from './auth/auth.service';
-// import { MainNavComponent } from './shared/main-nav/main-nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { NavComponent } from './shared/nav/nav.component';
 import { TopBarComponent } from './shared/top-bar/top-bar.component';
@@ -84,7 +84,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
       provide: AmplifyService,
       useFactory:  () => {
         return AmplifyModules({
-          Auth
+          Auth,
+          Storage
         });
       }
     }

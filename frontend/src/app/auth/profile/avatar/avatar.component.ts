@@ -11,16 +11,16 @@ import { CompressorService } from 'src/app/shared/services/compressor.service';
 export class AvatarComponent {
 
   photoUrl: string;
-  hasPhoto: boolean = false;
-  uploading: boolean = false;
+  hasPhoto = false;
+  uploading = false;
   s3ImageFile: any = null;
-  s3ImagePath: string = "avatar";
+  s3ImagePath = 'avatar';
   errorMessage: string;
-  previewClass = "app-avatar-upload";
+  previewClass = 'app-avatar-upload';
 
-  private _storageOptions: any = { 'level': 'private' };
-  private _previewClassIdle = "app-avatar-upload";
-  private _previewClassOver = "app-avatar-upload-dragover"
+  private _storageOptions: any = { level: 'private' };
+  private _previewClassIdle = 'app-avatar-upload';
+  private _previewClassOver = 'app-avatar-upload-dragover'
 
   @Input()
   set url(url: string) {
@@ -93,6 +93,7 @@ export class AvatarComponent {
         const that = this;
         const reader = new FileReader();
         reader.onload = e => {
+          console.log(e)
           const target: any = e.target;
           const url = target.result;
           that.photoUrl = url;
@@ -120,10 +121,10 @@ export class AvatarComponent {
   }
 
   completeFileUpload(error?: any) {
+    this.uploading = false;
     if (error) {
       return this._setError(error);
     }
-    this.uploading = false;
   }
 
   onPhotoError() {
