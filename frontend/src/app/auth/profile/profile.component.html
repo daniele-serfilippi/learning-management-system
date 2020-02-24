@@ -26,7 +26,19 @@
       </app-avatar>
     </div>
 
-    <button mat-raised-button color="primary" (click)="editProfile()"
-      [disabled]="loading.loading || !profileForm.valid">Save</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="editProfile()"
+      [disabled]="loading.loading || !profileForm.valid"
+    >Save</button>
+
+    <mat-divider class="my-3"></mat-divider>
+
+    <a mat-raised-button routerLink="/auth/edit-password">
+      <mat-icon>vpn_key</mat-icon>
+      Edit password
+    </a>
+
   </form>
 </div>

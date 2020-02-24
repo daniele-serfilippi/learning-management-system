@@ -119,4 +119,15 @@ export class AuthService {
     });
   }
 
+  editPassword(oldPassword, newPassword) {
+    return new Promise((resolve, reject) => {
+      Auth.currentAuthenticatedUser()
+      .then(user => {
+          return Auth.changePassword(user, oldPassword, newPassword);
+      })
+      .then(data => resolve(data))
+      .catch(err => reject(err));
+    });
+  }
+
 }

@@ -12,6 +12,7 @@ import { ProfileComponent } from 'src/app/auth/profile/profile.component';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { ForgotPasswordComponent } from 'src/app/auth/forgot-password/forgot-password.component';
 import { ResetPasswordWithCodeComponent } from 'src/app/auth/reset-password-with-code/reset-password-with-code.component';
+import { EditPasswordComponent } from 'src/app/auth/edit-password/edit-password.component';
 
 const routes: Routes = [
   {
@@ -46,6 +47,11 @@ const routes: Routes = [
       {
         path: 'profile',
         component: ProfileComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'edit-password',
+        component: EditPasswordComponent,
         canActivate: [AuthGuard]
       }
     ]

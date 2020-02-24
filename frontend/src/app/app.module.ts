@@ -42,6 +42,7 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
 import { PasswordStrengthConfirmComponent } from './auth/password-strength-confirm/password-strength-confirm.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordWithCodeComponent } from './auth/reset-password-with-code/reset-password-with-code.component';
+import { EditPasswordComponent } from './auth/edit-password/edit-password.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { ResetPasswordWithCodeComponent } from './auth/reset-password-with-code/
     TopBarComponent,
     PasswordStrengthConfirmComponent,
     ForgotPasswordComponent,
-    ResetPasswordWithCodeComponent
+    ResetPasswordWithCodeComponent,
+    EditPasswordComponent
   ],
   imports: [
     BrowserModule,

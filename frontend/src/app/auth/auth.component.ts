@@ -30,11 +30,11 @@ export class AuthComponent implements OnInit {
           break;
       }
     });
-    Auth.currentAuthenticatedUser()
-      .then(() => {
-        this.router.navigate(['auth/profile']);
-      })
-      .catch(error => { console.log(error) });
+    // Auth.currentAuthenticatedUser()
+    //   .then(() => {
+    //     this.router.navigate(['auth/profile']);
+    //   })
+    //   .catch(error => { console.log(error) });
   }
 
 }
