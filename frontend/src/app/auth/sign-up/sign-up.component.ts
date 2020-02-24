@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewEncapsulation, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { environment } from 'src/environments/environment';
@@ -8,63 +8,45 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.sass']
+  styleUrls: ['./sign-up.component.sass'],
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignUpComponent implements OnInit {
-  hide = true;
-  signupForm: FormGroup = new FormGroup({
-    email: new FormControl('', [Validators.email, Validators.required]),
-    password: new FormControl('', [Validators.required]),
-    phone: new FormControl('', [Validators.min(10)]),
-    fname: new FormControl('', [Validators.min(2)]),
-    lname: new FormControl('', [Validators.min(2)])
-  });
+  @ViewChild('passwordStrengthConfirm', {static: true})
+  passwordStrengthConfirm;
+
+  signupForm: FormGroup;
 
   get emailInput() { return this.signupForm.get('email'); }
   get passwordInput() { return this.signupForm.get('password'); }
-  get fnameInput() { return this.signupForm.get('fname'); }
-  get lnameInput() { return this.signupForm.get('lname'); }
+  get firstnameInput() { return this.signupForm.get('firstname'); }
+  get lastnameInput() { return this.signupForm.get('lastname'); }
   get phoneInput() { return this.signupForm.get('phone'); }
 
   constructor(
-    // private _bottomSheet: MatBottomSheet,
     private router: Router,
     private authService: AuthService,
     private notificationService: NotificationService
   ) { }
 
   ngOnInit() {
-  }
-
-  getEmailInputError() {
-    if (this.emailInput.hasError('email')) {
-      return 'Please enter a valid email address.';
-    }
-    if (this.emailInput.hasError('required')) {
-      return 'An Email is required.';
-    }
-  }
-
-  getPasswordInputError() {
-    if (this.passwordInput.hasError('required')) {
-      return 'A password is required.';
-    }
-  }
-
-  shouldEnableSubmit() {
-    return !this.emailInput.valid ||
-      !this.passwordInput.valid ||
-      !this.fnameInput.valid ||
-      !this.lnameInput.valid ||
-      !this.phoneInput.valid;
+    this.signupForm = new FormGroup({
+      email: new FormControl('', [Validators.email, Validators.required]),
+      password: this.passwordStrengthConfirm.passwordComponent.passwordFormControl,
+      confirmPassword: this.passwordStrengthConfirm.passwordComponent.passwordConfirmationFormControl,
+      phone: new FormControl(''),
+      firstname: new FormControl('', [Validators.required]),
+      lastname: new FormControl('', [Validators.required])
+    });
   }
 
   signUp() {
     this.authService.signUp({
       "email": this.emailInput.value,
       "password": this.passwordInput.value,
-      "firstName": this.fnameInput.value,
-      "lastName": this.lnameInput.value,
+      "firstName": this.firstnameInput.value,
+      "lastName": this.lastnameInput.value,
       "phone": this.phoneInput.value
     })
     .then((data) => {

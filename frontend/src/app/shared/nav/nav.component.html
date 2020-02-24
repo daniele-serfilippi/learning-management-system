@@ -18,14 +18,18 @@
 
         <a mat-list-item routerLink="/" style="height: 0;"></a>
 
-        <a *ngFor="let item of courseRoutes"
-           mat-list-item
-           (click)="navigationSidenav.close()"
-           [routerLink]="[item.route]"
-           routerLinkActive="list-item-active">
-          <mat-icon matListIcon class="nav-list-icon"> {{ item.icon }} </mat-icon>
-          {{item.title}}
-        </a>
+        <ng-container *ngFor="let item of courseRoutes">
+          <a
+            *ngIf="item.visible"
+            mat-list-item
+            (click)="navigationSidenav.close()"
+            [routerLink]="[item.route]"
+            routerLinkActive="list-item-active"
+          >
+            <mat-icon matListIcon class="nav-list-icon"> {{ item.icon }} </mat-icon>
+            {{item.title}}
+          </a>
+        </ng-container>
 
         <mat-divider></mat-divider>
 

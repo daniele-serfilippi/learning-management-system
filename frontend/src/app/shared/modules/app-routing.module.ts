@@ -10,6 +10,8 @@ import { SignUpComponent } from 'src/app/auth/sign-up/sign-up.component';
 import { ConfirmCodeComponent } from 'src/app/auth/confirm-code/confirm-code.component';
 import { ProfileComponent } from 'src/app/auth/profile/profile.component';
 import { AuthGuard } from 'src/app/auth/auth.guard';
+import { ForgotPasswordComponent } from 'src/app/auth/forgot-password/forgot-password.component';
+import { ResetPasswordWithCodeComponent } from 'src/app/auth/reset-password-with-code/reset-password-with-code.component';
 
 const routes: Routes = [
   {
@@ -19,6 +21,16 @@ const routes: Routes = [
       {
         path: 'signin',
         component: SignInComponent,
+        canActivate: [UnauthGuard]
+      },
+      {
+        path: 'forgot-password',
+        component: ForgotPasswordComponent,
+        canActivate: [UnauthGuard]
+      },
+      {
+        path: 'reset-password-with-code',
+        component: ResetPasswordWithCodeComponent,
         canActivate: [UnauthGuard]
       },
       {
@@ -41,8 +53,7 @@ const routes: Routes = [
   {
     path: '',
     redirectTo: '/courses',
-    pathMatch: 'full',
-    canActivate: [AuthGuard]
+    pathMatch: 'full'
   },
   {
     path: 'course',
@@ -57,7 +68,6 @@ const routes: Routes = [
   {
     path: 'courses',
     component: CoursesComponent,
-    canActivate: [AuthGuard],
     children: [
       { path: '', component: CoursesListComponent }
     ]

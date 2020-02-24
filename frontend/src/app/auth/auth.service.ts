@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import Auth, { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
 import { Hub, ICredentials } from '@aws-amplify/core';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { CognitoUser } from 'amazon-cognito-identity-js';
+import { AmplifyService } from 'aws-amplify-angular';
 
 export interface NewUser {
   email: string;
@@ -16,33 +17,54 @@ export interface NewUser {
   providedIn: 'root'
 })
 export class AuthService {
-  public static SIGN_IN = 'signIn';
-  public static SIGN_OUT = 'signOut';
-  public static FACEBOOK = CognitoHostedUIIdentityProvider.Facebook;
-  public static GOOGLE = CognitoHostedUIIdentityProvider.Google;
+  static SIGN_IN = 'signIn';
+  static SIGN_OUT = 'signOut';
+  static FACEBOOK = CognitoHostedUIIdentityProvider.Facebook;
+  static GOOGLE = CognitoHostedUIIdentityProvider.Google;
 
-  public loggedIn: boolean;
+  isLoggedInSubject = new BehaviorSubject<boolean>(this.loggedUser() ? true : false);
+  user: CognitoUser;
+
   private _authState: Subject<CognitoUser | any> = new Subject<CognitoUser | any>();
   authState: Observable<CognitoUser | any> = this._authState.asObservable();
 
-  constructor() {
+  constructor(private amplifyService: AmplifyService) {
+
     Hub.listen('auth', (data) => {
       const { channel, payload } = data;
       if (channel === 'auth') {
         this._authState.next(payload.event);
       }
     });
+
+    this.amplifyService.authStateChange$
+      .subscribe(authState => {
+        switch (authState.state) {
+          case 'signedIn':
+            this.isLoggedInSubject.next(true);
+            break;
+          case 'signedOut':
+            this.isLoggedInSubject.next(false);
+            break;
+        }
+        if (!authState.user) {
+          this.user = null;
+        } else {
+          this.user = authState.user;
+        }
+      });
+
   }
 
   signUp(user: NewUser): Promise<CognitoUser | any> {
     return Auth.signUp({
-      "username": user.email,
-      "password": user.password,
-      "attributes": {
-        "email": user.email,
-        "given_name": user.firstName,
-        "family_name": user.lastName,
-        "phone_number": user.phone
+      username: user.email,
+      password: user.password,
+      attributes: {
+        email: user.email,
+        given_name: user.firstName,
+        family_name: user.lastName,
+        phone_number: user.phone
       }
     });
   }
@@ -51,7 +73,7 @@ export class AuthService {
     return new Promise((resolve, reject) => {
       Auth.signIn(username, password)
         .then((user: CognitoUser | any) => {
-          this.loggedIn = true;
+          this.isLoggedInSubject.next(true);
           resolve(user);
         }).catch((error: any) => reject(error));
     });
@@ -59,17 +81,42 @@ export class AuthService {
 
   async signOut(): Promise<any> {
     await Auth.signOut();
-    return this.loggedIn = false;
+    this.isLoggedInSubject.next(false);
   }
 
   socialSignIn(provider: CognitoHostedUIIdentityProvider): Promise<ICredentials> {
     return Auth.federatedSignIn({
-      'provider': provider
+      provider
     });
   }
 
+  isLoggedIn() : Observable<boolean> {
+    return this.isLoggedInSubject.asObservable();
+   }
+
   async loggedUser() {
-    return await Auth.currentAuthenticatedUser;
+    try {
+      const loggedUser = await Auth.currentAuthenticatedUser();
+      return loggedUser;
+    } catch {
+      return null;
+    }
+  }
+
+  forgotPassword(username: string) {
+    return new Promise((resolve, reject) => {
+      Auth.forgotPassword(username)
+        .then((user) => resolve(user))
+        .catch((error) => reject(error));
+    });
+  }
+
+  resetPasswordWithCode(username: string, code: string, newPassword: string) {
+    return new Promise((resolve, reject) => {
+      Auth.forgotPasswordSubmit(username, code, newPassword)
+      .then(data => resolve(data))
+      .catch(err => reject(err));
+    });
   }
 
 }

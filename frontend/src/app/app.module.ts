@@ -38,6 +38,10 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { NavComponent } from './shared/nav/nav.component';
 import { TopBarComponent } from './shared/top-bar/top-bar.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
+import { PasswordStrengthConfirmComponent } from './auth/password-strength-confirm/password-strength-confirm.component';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import { ResetPasswordWithCodeComponent } from './auth/reset-password-with-code/reset-password-with-code.component';
 
 @NgModule({
   declarations: [
@@ -60,8 +64,10 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     ProfileComponent,
     AvatarComponent,
     NavComponent,
-    TopBarComponent
-    // MainNavComponent
+    TopBarComponent,
+    PasswordStrengthConfirmComponent,
+    ForgotPasswordComponent,
+    ResetPasswordWithCodeComponent
   ],
   imports: [
     BrowserModule,
@@ -74,7 +80,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     GraphQLModule,
     AmplifyAngularModule,
     LayoutModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MatPasswordStrengthModule
   ],
   providers: [
     AuthService,

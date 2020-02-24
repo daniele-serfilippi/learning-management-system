@@ -1,11 +1,14 @@
-<mat-card id="signin">
+<mat-card>
   <mat-card-content>
     <form [formGroup]="signinForm">
       <h2>Sign in to your account</h2>
       <mat-form-field>
         <input matInput placeholder="Email" type="email" formControlName="email" autocomplete="email" required>
-        <mat-error *ngIf="!emailInput.valid">
-          {{getEmailInputError()}}
+        <mat-error *ngIf="emailInput.hasError('required')">
+          Email is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="emailInput.hasError('email')">
+          Please enter a valid email address
         </mat-error>
       </mat-form-field>
       <mat-form-field>
@@ -15,9 +18,16 @@
           {{getPasswordInputError()}}
         </mat-error>
       </mat-form-field>
-      <button mat-raised-button type="submit" color="primary" (click)="signIn()" [disabled]="!signinForm.valid">Sign In</button>
 
-      <p class="text-center">or</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <button mat-raised-button type="submit" color="primary" (click)="signIn()" [disabled]="!signinForm.valid">Sign In</button>
+        <a
+          [routerLink]="['/auth/forgot-password']"
+          [queryParams]="emailInput.value ? {email: emailInput.value} : {}"
+        >Forgot password?</a>
+      </div>
+
+      <p class="text-center mt-3">or</p>
       <div class="text-center d-flex flex-column">
         <button mat-raised-button type="button" class="m-2" color="primary" (click)="signInWithFacebook()">
           Sign In with Facebook

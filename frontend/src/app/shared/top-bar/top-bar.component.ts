@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-top-bar',
@@ -8,10 +9,10 @@ import { AuthService } from 'src/app/auth/auth.service';
   styleUrls: ['./top-bar.component.sass']
 })
 export class TopBarComponent implements OnInit {
+  isLoggedIn : Observable<boolean>;
   @Output() toggleSidenav = new EventEmitter<void>();
 
   private returnUrl = '/';
-  loggedIn = false;
 
   constructor(
     private authService: AuthService,
@@ -24,10 +25,11 @@ export class TopBarComponent implements OnInit {
       }
     });
 
+    this.isLoggedIn = authService.isLoggedIn();
   }
 
   ngOnInit(): void {
-    this.loggedIn = this.authService.loggedIn;
+
   }
 
   onSignIn() {

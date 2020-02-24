@@ -12,11 +12,13 @@
 
       <ul fxLayout fxLayoutGap="20px" class="navigation-items">
 
-        <li *ngIf="!loggedIn">
-          <button mat-flat-button color="primary" (click)="onSignIn()">Sign In</button>
+        <li *ngIf="!(isLoggedIn | async)">
+          <button mat-flat-button color="primary" (click)="onSignIn()">
+            Sign In
+          </button>
         </li>
 
-        <li *ngIf="loggedIn">
+        <li *ngIf="(isLoggedIn | async)">
           <button mat-icon-button [matMenuTriggerFor]="auth">
             <mat-icon>person_outline</mat-icon>
           </button>

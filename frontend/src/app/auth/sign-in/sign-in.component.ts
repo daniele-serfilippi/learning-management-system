@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { CognitoUser } from '@aws-amplify/auth';
-import { Router } from '@angular/router';
+import { Router, Params } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { LoaderService } from 'src/app/shared/ui/loader/loader.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
@@ -31,15 +31,6 @@ export class SignInComponent {
     private loaderService: LoaderService
   ) { }
 
-  getEmailInputError() {
-    if (this.emailInput.hasError('email')) {
-      return 'Please enter a valid email address.';
-    }
-    if (this.emailInput.hasError('required')) {
-      return 'An Email is required.';
-    }
-  }
-
   getPasswordInputError() {
     if (this.passwordInput.hasError('required')) {
       return 'A password is required.';
@@ -62,12 +53,12 @@ export class SignInComponent {
         this.loaderService.hide();
         this.notificationService.showError(error.message);
         switch (error.code) {
-          case "UserNotConfirmedException":
+          case 'UserNotConfirmedException':
             environment.confirm.email = this.emailInput.value;
             environment.confirm.password = this.passwordInput.value;
             this.router.navigate(['auth/confirm']);
             break;
-          case "UsernameExistsException":
+          case 'UsernameExistsException':
             this.router.navigate(['auth/signin']);
             break;
         }
