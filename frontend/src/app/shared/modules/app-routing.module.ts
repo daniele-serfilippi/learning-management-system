@@ -53,6 +53,11 @@ const routes: Routes = [
         path: 'edit-password',
         component: EditPasswordComponent,
         canActivate: [AuthGuard]
+      },
+      {
+        path: '',
+        redirectTo: 'profile',
+        pathMatch: 'full'
       }
     ]
   },

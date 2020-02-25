@@ -1,5 +1,4 @@
 import { Component, OnInit, NgZone } from '@angular/core';
-import Auth from '@aws-amplify/auth';
 import { Router } from '@angular/router';
 import { Hub } from '@aws-amplify/core';
 
@@ -30,11 +29,6 @@ export class AuthComponent implements OnInit {
           break;
       }
     });
-    // Auth.currentAuthenticatedUser()
-    //   .then(() => {
-    //     this.router.navigate(['auth/profile']);
-    //   })
-    //   .catch(error => { console.log(error) });
   }
 
 }
