@@ -1,11 +1,11 @@
 # Security Policy for [Learning Management System]
 
 ## Introduction
-This document outlines the security policy for the [Learning Management System] repository. Our goal is to maintain the highest standards of security to protect the data and integrity of the system. We appreciate contributions from the community and encourage reporting of any security vulnerabilities discovered.
+This document outlines the security policy for the [21XO-LMS] repository. Our goal is to maintain the highest standards of security to protect the data and integrity of the system. We appreciate contributions from the community and encourage reporting of any security vulnerabilities discovered.
 
 ## Reporting Security Vulnerabilities
 If you discover a security issue, please follow these steps:
-- **Confidentiality**: Report vulnerabilities by getting in touch per the listed contact options on [danieleserfilippi.me](https://danieleserfilippi.me/) or sending an email to [security@danieleserfilippi.me](mailto:security@danieleserfilippi.me). Please do not report security vulnerabilities publicly.
+- **Confidentiality**: Report vulnerabilities by getting in touch per the listed contact options on [21xo.com](https://21xo.com/) or sending an email to [xofidelius@proton.me](mailto:xofidelius@proton.me). Please do not report security vulnerabilities publicly.
 - **Details**: Include as much information as possible about the vulnerability, including steps to reproduce, potential impact, and any suggestions for mitigation.
 - **Response**: We aim to respond to your report within 48 hours and will keep you informed throughout the process.
 
